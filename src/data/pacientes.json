@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "nombre": "Juan Pérez",
+      "rut": "12345678-9",
+      "fechaNacimiento": "1988-05-15",
+      "edad": 35,
+      "domicilio": "Av. Ejemplo 123, Santiago",
+      "telefono": "+56912345678",
+      "correoElectronico": "juan.perez@example.com",
+      "prevision": "Fonasa",
+      "hora": "09:00"
+    },
+    {
+      "id": 2,
+      "nombre": "María González",
+      "rut": "98765432-1",
+      "fechaNacimiento": "1995-08-22",
+      "edad": 28,
+      "domicilio": "Calle Muestra 456, Valparaíso",
+      "telefono": "+56987654321",
+      "correoElectronico": "maria.gonzalez@example.com",
+      "prevision": "Isapre",
+      "hora": "10:30"
+    },
+    {
+      "id": 3,
+      "nombre": "Carlos Rodríguez",
+      "rut": "56789012-3",
+      "fechaNacimiento": "1981-12-10",
+      "edad": 42,
+      "domicilio": "Pasaje Prueba 789, Concepción",
+      "telefono": "+56932165498",
+      "correoElectronico": "carlos.rodriguez@example.com",
+      "prevision": "Fonasa",
+      "hora": "11:45"
+    }
+  ]
