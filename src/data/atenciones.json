@@ -1,0 +1,40 @@
+[
+    {
+      "id": "1",
+      "pacienteRut": "12345678-9",
+      "fecha": "2023-06-10T10:30:00",
+      "profesional": "Dr. Juan Pérez",
+      "valoracion": {
+        "factores": "Paciente presenta dolor agudo en molar superior derecho",
+        "anamnesis": "Sin antecedentes médicos relevantes",
+        "motivoConsulta": "Dolor dental",
+        "rauNecesidades": "Requiere evaluación y posible tratamiento endodóntico",
+        "examenFisico": "Se observa inflamación en la zona afectada",
+        "instrumentosAplicados": "Radiografía periapical"
+      },
+      "diagnostico": {
+        "texto": "Pulpitis irreversible en pieza 1.6",
+        "predeterminado": "diagnostico1"
+      },
+      "intervenciones": "Se recomienda tratamiento de conducto en pieza 1.6"
+    },
+    {
+      "id": "2",
+      "pacienteRut": "12345678-9",
+      "fecha": "2023-06-15T14:00:00",
+      "profesional": "Dra. María Rodríguez",
+      "valoracion": {
+        "factores": "Paciente acude para tratamiento de conducto programado",
+        "anamnesis": "Sin cambios desde la última visita",
+        "motivoConsulta": "Tratamiento de conducto",
+        "rauNecesidades": "Realizar tratamiento de conducto en pieza 1.6",
+        "examenFisico": "No se observan cambios significativos",
+        "instrumentosAplicados": "Radiografía de control"
+      },
+      "diagnostico": {
+        "texto": "Pulpitis irreversible en pieza 1.6 - En tratamiento",
+        "predeterminado": "diagnostico2"
+      },
+      "intervenciones": "Se realiza primera sesión de tratamiento de conducto en pieza 1.6"
+    }
+  ]

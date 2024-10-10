@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import CrearPacienteButton from '../components/CrearPacienteButton'
 import BuscadorPaciente from '../components/BuscadorPaciente'
-import AgendaPaciente from '../components/AgendaPaciente'
+import InformacionPaciente from '../components/InformacionPaciente'
 import CrearPaciente from '../components/CrearPaciente'
 import { getPacientes, addPaciente } from '../utils/pacientesService'
 
@@ -20,7 +20,7 @@ export default function GestionPacientes() {
     logoAlt: "UDP Logo",
     menuItems: [
       { text: "Inicio", link: "/" },
-      { text: "Panel Admin", link: "/admin" },
+      { text: "Panel Admin", link: "/admin-menu" },
       { text: "Cerrar Sesión", link: "/logout" }
     ]
   }
@@ -51,7 +51,7 @@ export default function GestionPacientes() {
           </div>
 
           <div className="md:col-span-2">
-            {selectedPatient && <AgendaPaciente selectedPatient={selectedPatient} />}
+            {selectedPatient && <InformacionPaciente selectedPatient={selectedPatient} />}
           </div>
         </div>
       </main>

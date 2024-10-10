@@ -8,7 +8,7 @@ export default function LoginComponent() {
   const [showPassword, setShowPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const navigate = useNavigate()  // useNavigate es el reemplazo de useHistory en React Router v6+
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,7 +16,6 @@ export default function LoginComponent() {
     setErrorMessage('')
 
     try {
-      // Aquí iría la llamada a tu API de autenticación
       const response = await fakeAuthCall(username, password)
       
       if (response.success) {
@@ -31,7 +30,6 @@ export default function LoginComponent() {
     }
   }
 
-  // Esta es una función de autenticación simulada
   const fakeAuthCall = (username, password) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -41,15 +39,15 @@ export default function LoginComponent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex flex-col justify-start bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full mx-auto mt-8">
         <div>
           <img className="mx-auto h-12 w-auto" src="/images/FacsyoLogo.png" alt="Logo UDP" />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Iniciar sesión en su cuenta(Admin,Admin)
+          <h2 className="mt-6 text-center text-2xl font-extrabold text-gray-900">
+            Iniciar sesión en su cuenta (Admin, Admin)
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
