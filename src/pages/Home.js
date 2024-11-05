@@ -1,65 +1,96 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Header from '../components/Header'
-import Carousel from '../components/Carousel'
 import Footer from '../components/Footer'
-import HorizontalCard from '../components/HorizontalCard'
-import HorizontalCard2 from '../components/HorizontalCard2'
+import Card from '../components/Card'
 
-const tarjeta1 = {
-  imagen: "/images/Proyecto.png",
-  titulo: "Sobre el Proyecto",
-  texto: "Jorge Teillier Sandoval fue un poeta chileno de la llamada «generación literaria de 1950», creador y exponente de la poesía lárica en Chile. Nació en Lautaro, en la Región de la Araucanía, el 24 de junio de 1935 y falleció en Viña del Mar, en la Región de Valparaíso, el 22 de abril de 1996.",
-  color: "bg-blue-600"
-}
-
-const tarjeta2 = {
-  imagen: "/images/Ciberseg.png",
-  titulo: "Seguridad de la información",
-  texto: "La ciberseguridad, también conocida como seguridad digital, es la práctica de proteger su información digital, dispositivos y activos. Esto incluye información personal, cuentas, archivos, fotos e incluso el dinero.",
-  color: "bg-blue-600"
-}
-
-const tarjeta3 = {
-  imagen: "/images/Asistencia.png",
-  titulo: "Ayuda",
-  texto: "Pasos para rcp: 1. Verificar la conciencia del paciente. 2. Llamar a emergencias. 3. Comprimir el pecho. 4. Usar un desfibrilador.",
-  color: "bg-blue-600"
-}
+const cards = [
+  {
+    title: "Sobre el Proyecto",
+    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
+    link: "/sobre-el-proyecto"
+  },
+  {
+    title: "Seguridad de la información",
+    text: "La ciberseguridad, también conocida como seguridad digital, es la práctica de proteger su información digital, dispositivos y activos. Esto incluye información personal, cuentas, archivos, fotos e incluso el dinero.",
+    link: "/seguridad-informacion"
+  },
+  {
+    title: "Ayuda",
+    text: "Pasos para RCP: 1. Verificar la conciencia del paciente. 2. Llamar a emergencias. 3. Comprimir el pecho. 4. Usar un desfibrilador.",
+    link: "/ayuda"
+  }
+]
 
 export default function Home() {
   const proyectoRef = useRef(null)
   const seguridadRef = useRef(null)
   const ayudaRef = useRef(null)
+  const [imagePosition, setImagePosition] = useState({ x: 50, y: 50 })
 
   const scrollToSection = (ref) => {
     ref.current.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleImagePosition = (direction) => {
+    setImagePosition(prev => {
+      const step = 10
+      switch(direction) {
+        case 'up':
+          return { ...prev, y: Math.max(0, prev.y - step) }
+        case 'down':
+          return { ...prev, y: Math.min(100, prev.y + step) }
+        case 'left':
+          return { ...prev, x: Math.max(0, prev.x - step) }
+        case 'right':
+          return { ...prev, x: Math.min(100, prev.x + step) }
+        default:
+          return prev
+      }
+    })
   }
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
     logoAlt: "UDP Logo",
     menuItems: [
-      { text: "Inicio", link: "/" },
-      { text: "Sobre el Proyecto", onClick: () => scrollToSection(proyectoRef) },
-      { text: "Seguridad de la información", onClick: () => scrollToSection(seguridadRef) },
-      { text: "Ayuda", onClick: () => scrollToSection(ayudaRef) },
-      { text: "Iniciar Sesión", link: "/iniciar-sesion" }
-    ]
+      { text: "INICIO", link: "/" },
+      { text: "SOBRE EL PROYECTO", onClick: () => scrollToSection(proyectoRef) },
+      { text: "SEGURIDAD DE LA INFORMACION", onClick: () => scrollToSection(seguridadRef) },
+      { text: "AYUDA", onClick: () => scrollToSection(ayudaRef) },
+    ],
+    circleButton: {
+      text: "INICIAR SESIÓN",
+      link: "/iniciar-sesion"
+    }
+    
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header {...headerProps} />
       <main className="flex-grow">
-        <Carousel />
+        <div className="relative w-full h-[400px]">
+          <img
+            src="/images/Facsyo.jpeg"
+            alt="Facsyo"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: `${imagePosition.x}% ${imagePosition.y}%` }}
+          />
+          <div className="absolute top-2 right-2 bg-white bg-opacity-50 p-2 rounded">
+            <button onClick={() => handleImagePosition('up')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">↑</button>
+            <button onClick={() => handleImagePosition('down')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">↓</button>
+            <button onClick={() => handleImagePosition('left')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">←</button>
+            <button onClick={() => handleImagePosition('right')} className="px-2 py-1 bg-blue-500 text-white rounded">→</button>
+          </div>
+        </div>
         <div ref={proyectoRef}>
-          <HorizontalCard {...tarjeta1} />
+          <Card {...cards[0]} />
         </div>
         <div ref={seguridadRef}>
-          <HorizontalCard2 {...tarjeta2} />
+          <Card {...cards[1]} />
         </div>
         <div ref={ayudaRef}>
-          <HorizontalCard {...tarjeta3} />
+          <Card {...cards[2]} />
         </div>
       </main>
       <Footer />
