@@ -1,0 +1,87 @@
+Informe del paquete
+
+-----------------------------------------------------------------------------
+Documento:
+Nombre: Propuesta WEB_Ficha Clínica_UDP V1.ai
+Modo de color: Color RGB
+Perfil de color: sRGB IEC61966-2.1
+Unidades de regla: píxeles
+Dimensiones de la mesa de trabajo: 266 px x 98 px
+Mostrar imágenes en modo contorno: Desactivado
+Resaltar fuentes sustituidas: Desactivado
+Resaltar glifos sustituidos: Desactivado
+Conservar capacidad de edición de texto
+Simular papel de color: Desactivado
+
+-----------------------------------------------------------------------------
+Objetos de tintas planas:
+R=63 G=62 B=62 (RGB)
+
+-----------------------------------------------------------------------------
+Fuentes no disponibles:Ninguno
+
+-----------------------------------------------------------------------------
+Fuentes protegidas no empaquetadas:Ninguno
+
+-----------------------------------------------------------------------------
+Fuentes:
+ABC Arizona Flare Light (OTF)
+ABC Arizona Flare Medium (OTF)
+Work Sans Regular (TrueType)
+Work Sans SemiBold (TrueType)
+Work Sans Medium (TrueType)
+
+-----------------------------------------------------------------------------
+Fuentes incrustadas:
+Ninguno
+
+-----------------------------------------------------------------------------
+Enlaces no disponibles:
+Ninguno
+
+-----------------------------------------------------------------------------
+Imágenes enlazadas:
+
+C:\Users\felipe.miranda\OneDrive - udp.cl\Documentos\Pregrado y Estudios Generales\Facultad de Salud y Odontología\Ficha Clínica\Material\01. Fac. Salud y Odontología.jpeg
+Tipo: RGB
+Bits por píxel: 24
+Canales: 3
+Tamaño: 12802K, 2560 por 1707 píxeles
+Dimensiones: 1920 por 1280,25 puntos 
+Resolución: 96 por 96 píxeles por pulgada
+
+
+C:\Users\felipe.miranda\OneDrive - udp.cl\Documentos\Pregrado y Estudios Generales\Facultad de Salud y Odontología\Ficha Clínica\Material\Imagenes Proyecto Clinica UDP\4.Login.png
+Tipo: RGB transparente
+Bits por píxel: 32
+Canales: 4
+Tamaño: 8100K, 1920 por 1080 píxeles
+Dimensiones: 1920 por 1080 puntos 
+Resolución: 72 por 72 píxeles por pulgada
+
+
+C:\Users\felipe.miranda\OneDrive - udp.cl\Documentos\Pregrado y Estudios Generales\Facultad de Salud y Odontología\Ficha Clínica\Material\02. Fac. Salud y Odontología_Gris.png
+Tipo: RGB
+Bits por píxel: 24
+Canales: 3
+Tamaño: 12802K, 2560 por 1707 píxeles
+Dimensiones: 1920 por 1280,25 puntos 
+Resolución: 96 por 96 píxeles por pulgada
+
+
+C:\Users\felipe.miranda\OneDrive - udp.cl\Documentos\Pregrado y Estudios Generales\Facultad de Salud y Odontología\Ficha Clínica\Material\03. Panel de Administración.png
+Tipo: RGB
+Bits por píxel: 24
+Canales: 3
+Tamaño: 6591K, 2000 por 1125 píxeles
+Dimensiones: 1939 por 1090,688 puntos 
+Resolución: 74,265 por 74,265 píxeles por pulgada
+
+
+C:\Users\felipe.miranda\OneDrive - udp.cl\Documentos\Pregrado y Estudios Generales\Facultad de Salud y Odontología\Ficha Clínica\Material\Imagenes Proyecto Clinica UDP\11.AgregarFicha.png
+Tipo: RGB transparente
+Bits por píxel: 32
+Canales: 4
+Tamaño: 7885K, 1899 por 1063 píxeles
+Dimensiones: 2538,829 por 1421,156 puntos 
+Resolución: 53,855 por 53,855 píxeles por pulgada
