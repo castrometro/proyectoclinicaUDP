@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import date
+from django.contrib.auth.models import User
 
 class Paciente(models.Model):
     # Campos del modelo Paciente
@@ -43,4 +44,14 @@ class FichaClinica(models.Model):
     def __str__(self):
         return f"Ficha de {self.paciente} - {self.fecha_creacion.strftime('%Y-%m-%d %H:%M:%S')}"
 
+class DocenteUser(User):
+    class Meta:
+        proxy = True
+        verbose_name = "Docente"
+        verbose_name_plural = "Docentes"
 
+class EstudianteUser(User):
+    class Meta:
+        proxy = True
+        verbose_name = "Estudiante"
+        verbose_name_plural = "Estudiantes"

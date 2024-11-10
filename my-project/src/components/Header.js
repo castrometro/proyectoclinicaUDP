@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 
 export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-sm py-4 flex items-center">
@@ -11,10 +11,6 @@ export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <img src={logoSrc} alt={logoAlt} className="h-8 sm:h-10" />
-            {/* <h1 className="ml-2 text-sm sm:text-base font-arizona font-light uppercase leading-tight">
-              <span className="block">Facultad de</span>
-              <span className="block">Salud y Odontología</span>
-            </h1> */}
           </div>
           <div className="flex items-center space-x-4 sm:space-x-6">
             <nav className="hidden md:block">
@@ -41,12 +37,21 @@ export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
               </ul>
             </nav>
             {circleButton && (
-              <Link 
-                to={circleButton.link} 
-                className="hidden md:block font-worksans font-medium text-xs lg:text-sm uppercase border border-black rounded-full px-3 py-1 hover:bg-black hover:text-white transition duration-300"
-              >
-                {circleButton.text}
-              </Link>
+              circleButton.onClick ? (
+                <button
+                  onClick={circleButton.onClick} 
+                  className="hidden md:block font-worksans font-medium text-xs lg:text-sm uppercase border border-black rounded-full px-3 py-1 hover:bg-black hover:text-white transition duration-300"
+                >
+                  {circleButton.text}
+                </button>
+              ) : (
+                <Link
+                  to={circleButton.link} 
+                  className="hidden md:block font-worksans font-medium text-xs lg:text-sm uppercase border border-black rounded-full px-3 py-1 hover:bg-black hover:text-white transition duration-300"
+                >
+                  {circleButton.text}
+                </Link>
+              )
             )}
             <button
               className="md:hidden"
@@ -64,8 +69,8 @@ export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
                   {item.onClick ? (
                     <button 
                       onClick={() => {
-                        item.onClick()
-                        setIsMenuOpen(false)
+                        item.onClick();
+                        setIsMenuOpen(false);
                       }} 
                       className="font-worksans font-medium text-xs uppercase hover:text-blue-600 transition duration-300"
                     >
@@ -84,13 +89,25 @@ export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
               ))}
               {circleButton && (
                 <li>
-                  <Link 
-                    to={circleButton.link} 
-                    className="font-worksans font-medium text-xs uppercase hover:text-blue-600 transition duration-300"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {circleButton.text}
-                  </Link>
+                  {circleButton.onClick ? (
+                    <button 
+                      onClick={() => {
+                        circleButton.onClick();
+                        setIsMenuOpen(false);
+                      }} 
+                      className="font-worksans font-medium text-xs uppercase hover:text-blue-600 transition duration-300"
+                    >
+                      {circleButton.text}
+                    </button>
+                  ) : (
+                    <Link 
+                      to={circleButton.link} 
+                      className="font-worksans font-medium text-xs uppercase hover:text-blue-600 transition duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {circleButton.text}
+                    </Link>
+                  )}
                 </li>
               )}
             </ul>
@@ -98,5 +115,5 @@ export default function Header({ menuItems, logoSrc, logoAlt, circleButton }) {
         )}
       </div>
     </header>
-  )
+  );
 }

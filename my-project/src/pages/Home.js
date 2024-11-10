@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import Card from '../components/Card'
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Card from '../components/Card';
 
 const cards = [
   {
@@ -19,35 +20,43 @@ const cards = [
     text: "Pasos para RCP: 1. Verificar la conciencia del paciente. 2. Llamar a emergencias. 3. Comprimir el pecho. 4. Usar un desfibrilador.",
     link: "/ayuda"
   }
-]
+];
 
 export default function Home() {
-  const proyectoRef = useRef(null)
-  const seguridadRef = useRef(null)
-  const ayudaRef = useRef(null)
-  const [imagePosition, setImagePosition] = useState({ x: 50, y: 50 })
+  const proyectoRef = useRef(null);
+  const seguridadRef = useRef(null);
+  const ayudaRef = useRef(null);
+  const [imagePosition, setImagePosition] = useState({ x: 50, y: 50 });
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Verifica si el token existe en localStorage para saber si el usuario está logueado
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const scrollToSection = (ref) => {
-    ref.current.scrollIntoView({ behavior: 'smooth' })
-  }
+    ref.current.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleImagePosition = (direction) => {
-    setImagePosition(prev => {
-      const step = 10
-      switch(direction) {
+    setImagePosition((prev) => {
+      const step = 10;
+      switch (direction) {
         case 'up':
-          return { ...prev, y: Math.max(0, prev.y - step) }
+          return { ...prev, y: Math.max(0, prev.y - step) };
         case 'down':
-          return { ...prev, y: Math.min(100, prev.y + step) }
+          return { ...prev, y: Math.min(100, prev.y + step) };
         case 'left':
-          return { ...prev, x: Math.max(0, prev.x - step) }
+          return { ...prev, x: Math.max(0, prev.x - step) };
         case 'right':
-          return { ...prev, x: Math.min(100, prev.x + step) }
+          return { ...prev, x: Math.min(100, prev.x + step) };
         default:
-          return prev
+          return prev;
       }
-    })
-  }
+    });
+  };
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
@@ -58,12 +67,16 @@ export default function Home() {
       { text: "SEGURIDAD DE LA INFORMACION", onClick: () => scrollToSection(seguridadRef) },
       { text: "AYUDA", onClick: () => scrollToSection(ayudaRef) },
     ],
-    circleButton: {
-      text: "INICIAR SESIÓN",
-      link: "/iniciar-sesion"
-    }
-    
-  }
+    circleButton: isLoggedIn
+      ? {
+          text: "ADMIN MENU",
+          onClick: () => navigate('/admin-menu') // Redirige al menú de administración si está logueado
+        }
+      : {
+          text: "INICIAR SESIÓN",
+          link: "/iniciar-sesion" // Redirige a la página de inicio de sesión si no está logueado
+        },
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -95,5 +108,5 @@ export default function Home() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
