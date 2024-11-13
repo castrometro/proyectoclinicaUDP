@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink,User, Edit, Trash2 } from 'lucide-react';
+import { ExternalLink,User, Edit, Trash2,Calendar,Mail,Phone,CreditCard } from 'lucide-react';
 import { deletePaciente, updatePaciente } from '../utils/pacientesService';
 
 const userRole = localStorage.getItem('userRole');
@@ -160,7 +160,22 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted 
                 <User size={16} className="mr-2 text-gray-500" />
                 <span className="font-semibold mr-2">RUT:</span> {selectedPatient.rut}
               </p>
-              {/* Añadir aquí el resto de la información del paciente como en la versión de solo lectura */}
+              <p className="flex items-center"> 
+                <Calendar size={16} className="mr-2 text-gray-500" />
+                <span className="font-semibold mr-2">Edad:</span> {selectedPatient.edad} años
+              </p>
+              <p className="flex items-center">
+                <Mail size={16} className="mr-2 text-gray-500" />
+                <span className="font-semibold mr-2">Correo:</span> {selectedPatient.correo}
+              </p>
+              <p className="flex items-center">
+                <Phone size={16} className="mr-2 text-gray-500" />
+                <span className="font-semibold mr-2">Teléfono:</span> {selectedPatient.numero_telefono}
+              </p>
+              <p className="flex items-center">
+                <CreditCard size={16} className="mr-2 text-gray-500" />
+                <span className="font-semibold mr-2">Previsión:</span> {selectedPatient.prevision}
+              </p>
             </div>
           )}
 
