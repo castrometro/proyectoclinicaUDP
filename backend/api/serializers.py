@@ -1,9 +1,8 @@
 # serializers.py
 from rest_framework import serializers
 from .models import Paciente, FichaClinica
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,7 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
 class PacienteSerializer(serializers.ModelSerializer):
     edad = serializers.ReadOnlyField()  # Campo de solo lectura calculado automáticamente
 
@@ -34,7 +32,6 @@ class FichaClinicaSerializer(serializers.ModelSerializer):
     class Meta:
         model = FichaClinica
         fields = '__all__'  # Incluir todos los campos del modelo FichaClinica
-
 
 #serializer -> traductor de objetos a json y viceversa.
 #serializers.ModelSerializer -> traduce los objetos a json y viceversa.

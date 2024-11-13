@@ -1,63 +1,85 @@
 // utils/pacientesService.js
-import axios from 'axios'
+import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/pacientes/'
+const API_URL = 'http://127.0.0.1:8000/api/pacientes/';
 
 // Función para obtener la lista de pacientes
 export const getPacientes = async () => {
   try {
-    const response = await axios.get(`${API_URL}`)
-    return Array.isArray(response.data) ? response.data : []  // Asegúrate de que siempre devuelva un array
+    const token = localStorage.getItem('token'); // Obtén el token del almacenamiento local
+    const response = await axios.get(API_URL, {
+      headers: {
+        'Authorization': `Bearer ${token}`, // Agrega el token en los encabezados
+      }
+    });
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error("Error al obtener pacientes:", error)
-    return []  // Devuelve un array vacío en caso de error
+    console.error("Error al obtener pacientes:", error);
+    return [];
   }
-}
+};
+
+export const searchPacientes = async (searchTerm) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}?search=${searchTerm}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al buscar pacientes:", error);
+    return [];
+  }
+};
+
 // Función para agregar un paciente
 export const addPaciente = async (paciente) => {
   try {
+    const token = localStorage.getItem('token');
     const response = await axios.post(API_URL, paciente, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Agrega el token en los encabezados
       }
-    })
-    return response.data
+    });
+    return response.data;
   } catch (error) {
-    console.error("Error al crear paciente:", error)
-    return null
+    console.error("Error al crear paciente:", error);
+    return null;
   }
-}
+};
 
-
-// Función para obtener atenciones de un paciente
-export const getAtencionesByPaciente = async (pacienteId) => {
+// Función para actualizar un paciente
+export const updatePaciente = async (id, paciente) => {
   try {
-    const response = await axios.get(`${API_URL}fichas_clinicas/?paciente=${pacienteId}`)
-    return response.data
+    const token = localStorage.getItem('token');
+    const response = await axios.put(`${API_URL}${id}/`, paciente, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Agrega el token en los encabezados
+      }
+    });
+    return response.data;
   } catch (error) {
-    console.error("Error al obtener atenciones:", error)
-    return []
+    console.error("Error al actualizar paciente:", error);
+    return null;
   }
-}
+};
 
-// Función para agregar una atención
-export const addAtencion = async (atencion) => {
+// Función para eliminar un paciente
+export const deletePaciente = async (id) => {
   try {
-    const response = await axios.post(`${API_URL}fichas_clinicas/`, atencion)
-    return response.data
+    const token = localStorage.getItem('token');
+    await axios.delete(`${API_URL}${id}/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`, // Agrega el token en los encabezados
+      }
+    });
+    return true;
   } catch (error) {
-    console.error("Error al crear atención:", error)
-    return null
+    console.error("Error al eliminar paciente:", error);
+    return false;
   }
-}
-
-// Función para actualizar una atención
-export const updateAtencion = async (atencionId, atencionData) => {
-  try {
-    const response = await axios.put(`${API_URL}fichas_clinicas/${atencionId}/`, atencionData)
-    return response.data
-  } catch (error) {
-    console.error("Error al actualizar atención:", error)
-    return null
-  }
-}
+};

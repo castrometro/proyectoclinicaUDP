@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import IniciarSesion from './pages/IniciarSesion';
 import MenuAdmin from './pages/MenuAdmin';
 import GestionPacientes from './pages/GestionPacientes';
-import FichaPaciente from './pages/FichaPaciente';
+// import FichaPaciente from './pages/FichaPaciente';
 import GestionDocentes from './pages/GestionDocentes';
 import GestionEstudiantes from './pages/GestionEstudiantes';
 import GestionAdministrador from './pages/GestionAdministrador';
@@ -18,7 +18,7 @@ function App() {
         <Route path="/iniciar-sesion" element={<IniciarSesion />} />
         <Route path="/admin-menu" element={<MenuAdmin />} />
         <Route path="/gestion-pacientes" element={<GestionPacientes />} />
-        <Route path="/ficha-paciente/:rut" element={<FichaPaciente />} />
+        {/* <Route path="/ficha-paciente/:rut" element={<FichaPaciente />} /> */}
         <Route path="/gestion-docentes" element={<GestionDocentes />} />
         <Route path="/gestion-estudiantes" element={<GestionEstudiantes />} />
         <Route path="/gestion-administrador" element={<GestionAdministrador />} />

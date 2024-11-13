@@ -1,7 +1,7 @@
 // Login.js
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import axios from 'axios';
+import { login } from '../utils/authService';
 
 export default function Login({ onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,19 +11,12 @@ export default function Login({ onSuccess }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', { username, password });
-      const accesstoken = response.data.access;
+    const result = await login(username, password);
 
-      if (accesstoken) {
-        localStorage.setItem('token', accesstoken);
-        onSuccess(); // Llama a onSuccess si el login es exitoso
-      } else {
-        setErrorMessage('Error al iniciar sesión. Inténtalo de nuevo.');
-      }
-    } catch (error) {
-      setErrorMessage('Nombre de usuario o contraseña incorrectos.');
-      console.error("Error de inicio de sesión:", error);
+    if (result.success) {
+      onSuccess(); // Llama a onSuccess si el login es exitoso
+    } else {
+      setErrorMessage(result.message);
     }
   };
 

@@ -1,29 +1,28 @@
-import React, { useState, useEffect } from 'react'
-import { Search } from 'lucide-react'
+// BuscadorPaciente.js
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
+import { searchPacientes } from '../utils/pacientesService';
 
-export default function BuscadorPaciente({ pacientes, onSelectPatient }) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filteredPacientes, setFilteredPacientes] = useState([])
+export default function BuscadorPaciente({ onSelectPatient }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredPacientes, setFilteredPacientes] = useState([]);
 
-  useEffect(() => {
-    // Actualiza `filteredPacientes` cada vez que cambian `pacientes` o `searchTerm`
-    const filtered = pacientes.filter(paciente =>
-      paciente.rut.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      paciente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) || // Opcional: Buscar también por nombre
-      paciente.apellido.toLowerCase().includes(searchTerm.toLowerCase())  // Opcional: Buscar también por apellido
-    )
-    setFilteredPacientes(filtered)
-  }, [searchTerm, pacientes])  // Dependencias: `searchTerm` y `pacientes`
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value)
-  }
+  const handleSearch = async (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    if (term) {
+      const results = await searchPacientes(term);
+      setFilteredPacientes(results);
+    } else {
+      setFilteredPacientes([]);
+    }
+  };
 
   const handleSelect = (paciente) => {
-    setSearchTerm(paciente.rut)
-    setFilteredPacientes([])
-    onSelectPatient(paciente)
-  }
+    setSearchTerm(paciente.rut);
+    setFilteredPacientes([]);
+    onSelectPatient(paciente);
+  };
 
   return (
     <div className="relative">
@@ -51,5 +50,5 @@ export default function BuscadorPaciente({ pacientes, onSelectPatient }) {
         </ul>
       )}
     </div>
-  )
+  );
 }
