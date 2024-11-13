@@ -61,6 +61,10 @@ export default function GestionPacientes() {
     setSelectedPatient(null); // Deselecciona el paciente eliminado
   };
 
+  const handlePatientUpdate = () => {
+    setSelectedPatient(null); // Deselecciona el paciente después de una edición exitosa
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -79,7 +83,11 @@ export default function GestionPacientes() {
           </div>
 
           <div className="md:col-span-2">
-            {selectedPatient && <InformacionPaciente selectedPatient={selectedPatient} onPatientDeleted={handlePatientDeletion}/>}
+            {selectedPatient && <InformacionPaciente 
+            selectedPatient={selectedPatient} 
+            onPatientDeleted={handlePatientDeletion}
+            onPatientUpdated={handlePatientUpdate}
+            />}
           </div>
         </div>
       </main>

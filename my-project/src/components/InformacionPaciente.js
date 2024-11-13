@@ -5,7 +5,7 @@ import { deletePaciente, updatePaciente } from '../utils/pacientesService';
 
 const userRole = localStorage.getItem('userRole');
 
-export default function InformacionPaciente({ selectedPatient, onPatientDeleted }) {
+export default function InformacionPaciente({ selectedPatient, onPatientDeleted, onPatientUpdated }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ ...selectedPatient });
 
@@ -38,9 +38,11 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted 
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedPatient = await updatePaciente(selectedPatient.id, editForm);
+    const updatedPatient = await updatePaciente(selectedPatient.rut, editForm);
     if (updatedPatient) {
       setIsEditing(false);
+      window.alert('Paciente actualizado exitosamente.');
+      onPatientUpdated();
     } else {
       alert('No se pudo actualizar el paciente.');
     }
