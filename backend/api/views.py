@@ -5,12 +5,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User, Group
-from .models import Paciente, FichaClinica, DocenteUser
-from .serializers import PacienteSerializer, FichaClinicaSerializer, UserSerializer
-from .permissions import IsAdmin, IsDocente, IsEstudiante, IsAdminOrDocente
+from .models import Paciente, FichaClinica
+from .serializers import PacienteSerializer, UserSerializer, FichaClinicaSerializer
+from .permissions import  IsAdminOrDocente, IsAdminOrDocenteOrReadOnly
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]
@@ -45,26 +46,23 @@ class PacienteViewSet(viewsets.ModelViewSet):
     queryset = Paciente.objects.all()
     serializer_class = PacienteSerializer
     permission_classes = [IsAuthenticated, IsAdminOrDocente]  # Requiere autenticación
+    
 
 
 class FichaClinicaViewSet(viewsets.ModelViewSet):
-    # permission_classes = [permissions.IsAuthenticated]
     queryset = FichaClinica.objects.all()
     serializer_class = FichaClinicaSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrDocenteOrReadOnly]
 
-    # Filtrar las fichas clínicas para un paciente específico
-    def list(self, request, *args, **kwargs):
-        paciente_rut = self.request.query_params.get('paciente_rut')
-        if paciente_rut:
-            fichas = FichaClinica.objects.filter(paciente__rut=paciente_rut)
-            serializer = self.get_serializer(fichas, many=True)
-            return Response(serializer.data)
-        return super().list(request, *args, **kwargs)
-
-    # Crear una nueva ficha clínica y registrar la atención
     def perform_create(self, serializer):
-        usuario_creacion = self.request.user  # El usuario que está creando la ficha
-        serializer.save(usuario_creacion=usuario_creacion, usuario_modificacion=usuario_creacion)
+        # Asigna el usuario que crea la ficha clínica
+        serializer.save(creado_por=self.request.user, modificado_por=self.request.user)
+
+    def perform_update(self, serializer):
+        # Actualiza el usuario que modifica la ficha clínica
+        serializer.save(modificado_por=self.request.user)
+
+
 
 
 @api_view(['GET'])

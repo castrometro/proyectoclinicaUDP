@@ -19,6 +19,23 @@ export const getPacientes = async () => {
   }
 };
 
+// Función para obtener un paciente por RUT
+export const getPacienteByRut = async (rut) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}${rut}/`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Agrega el token en los encabezados
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener el paciente con RUT ${rut}:`, error);
+    return null;
+  }
+};
+
+// Función para buscar pacientes
 export const searchPacientes = async (searchTerm) => {
   try {
     const token = localStorage.getItem('token');

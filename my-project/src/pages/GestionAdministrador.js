@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Header from '../components/Header'
 import AdministradorDashboard from '../components/AdministradorDashboard'
 import GestionUsuarios from '../components/GestionUsuarios'

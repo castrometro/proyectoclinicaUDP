@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from datetime import date, timedelta
 
 
+
 class Paciente(models.Model):
     rut = models.CharField(max_length=12, primary_key=True, verbose_name="RUT")
     nombre = models.CharField(max_length=100)
@@ -24,59 +25,6 @@ class Paciente(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.rut})"
 
-class FichaClinica(models.Model):
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name="fichas_clinicas")
-    fecha_creacion = models.DateField(auto_now_add=True)  # También representa la fecha de atención
-    hora_creacion = models.TimeField()   # También representa la hora de atención
-    profesional = models.CharField(max_length=100)        # Profesional que atendió al paciente
-    usuario_creacion = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="fichas_creadas")
-    fecha_modificacion = models.DateField(auto_now=True)
-    hora_modificacion = models.TimeField()
-    usuario_modificacion = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="fichas_modificadas")
-    profesionales_que_modificaron = models.ManyToManyField(User, related_name="profesionales_modificadores", blank=True)
-    
-    factores = models.TextField()
-    anamnesis = models.TextField()
-    motivo_consulta = models.TextField()
-    rau_necesidades = models.TextField()
-    examen_fisico = models.TextField()
-    instrumentos_aplicados = models.TextField()
-    diagnostico = models.TextField()
-    intervenciones = models.TextField()
-    imagenes = models.ImageField(upload_to='fichas_imagenes/', blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Ficha Clinica"
-        verbose_name_plural = "Fichas Clinicas"
-
-    def __str__(self):
-        return f"Ficha de {self.paciente} - {self.fecha_creacion} {self.hora_creacion}"
-
-    def save(self, *args, **kwargs):
-        # Ajustar la hora de creación si es nueva ficha
-        if not self.pk:  # Si la ficha es nueva (no tiene clave primaria aún)
-            now = timezone.now() - timedelta(hours=3)  # Resta 3 horas
-            self.hora_creacion = now.replace(second=0, microsecond=0).time()  # Hora sin segundos
-            
-        # Ajustar la hora de modificación en cada guardado
-        now = timezone.now() - timedelta(hours=3)  # Resta 3 horas
-        self.hora_modificacion = now.replace(second=0, microsecond=0).time()  # Hora sin segundos
-
-        super().save(*args, **kwargs)
-
-class HistorialModificacionFichaClinica(models.Model):
-    ficha_clinica = models.ForeignKey(FichaClinica, on_delete=models.CASCADE, related_name="historial_modificaciones")
-    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    fecha_modificacion = models.DateField(auto_now_add=True)
-    hora_modificacion = models.TimeField(auto_now_add=True)
-    accion = models.CharField(max_length=12, choices=[("creacion", "Creación"), ("modificacion", "Modificación")])
-
-    class Meta:
-        verbose_name = "Historial de Modificacion de Ficha Clinica"
-        verbose_name_plural = "Historiales de Modificaciones de Fichas Clinicas"
-
-    def __str__(self):
-        return f"{self.accion.capitalize()} de {self.ficha_clinica} por {self.usuario} en {self.fecha_modificacion} {self.hora_modificacion}"
 
 class DocenteUser(User):
     class Meta:
@@ -89,3 +37,26 @@ class EstudianteUser(User):
         proxy = True
         verbose_name = "Estudiante"
         verbose_name_plural = "Estudiantes"
+
+class FichaClinica(models.Model):
+    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name="fichas")
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="fichas_creadas")
+    modificado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="fichas_modificadas")
+    motivo_consulta = models.TextField()
+    anamnesis = models.TextField()
+    examen_fisico = models.TextField()
+    diagnostico = models.TextField()
+    intervenciones = models.TextField()
+    factores = models.TextField()
+    rau_necesidades = models.TextField()
+    instrumentos_aplicados = models.TextField()
+
+    def __str__(self):
+        return f"Ficha Clínica de {self.id_paciente} - {self.fecha_creacion.strftime('%Y-%m-%d')}"
+
+    class Meta:
+        verbose_name = "Ficha Clínica"
+        verbose_name_plural = "Fichas Clínicas"
+        ordering = ['-fecha_creacion']

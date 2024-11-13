@@ -5,8 +5,8 @@ from .views import *
 # Crea el router y registra las vistas
 router = DefaultRouter()
 router.register(r'pacientes', PacienteViewSet)
-router.register(r'fichasclinicas', FichaClinicaViewSet)  # Cambiado a fichasclinicas para manejar atenciones y fichas clínicas
 router.register(r'docentes', DocenteViewSet)
+router.register(r'fichas-clinicas', FichaClinicaViewSet)  # Registro de FichaClinicaViewSet
 
 # Define las URLs de la aplicación api
 urlpatterns = [
