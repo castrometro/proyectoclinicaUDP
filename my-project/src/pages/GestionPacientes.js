@@ -55,6 +55,13 @@ export default function GestionPacientes() {
     setShowCrearPaciente(false); // Cierra el modal después de crear el paciente
   };
 
+  const handlePatientDeletion = (rut) => {
+    // Filtra el paciente eliminado de la lista
+    setPacientes(prevPacientes => prevPacientes.filter(p => p.rut !== rut));
+    setSelectedPatient(null); // Deselecciona el paciente eliminado
+  };
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header {...headerProps} />
@@ -72,7 +79,7 @@ export default function GestionPacientes() {
           </div>
 
           <div className="md:col-span-2">
-            {selectedPatient && <InformacionPaciente selectedPatient={selectedPatient} />}
+            {selectedPatient && <InformacionPaciente selectedPatient={selectedPatient} onPatientDeleted={handlePatientDeletion}/>}
           </div>
         </div>
       </main>

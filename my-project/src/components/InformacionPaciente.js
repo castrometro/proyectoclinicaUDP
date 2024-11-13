@@ -26,9 +26,10 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted 
 
   const handleDelete = async () => {
     if (window.confirm(`¿Estás seguro de que deseas eliminar a ${selectedPatient.nombre}?`)) {
-      const success = await deletePaciente(selectedPatient.id);
+      const success = await deletePaciente(selectedPatient.rut);
       if (success) {
-        onPatientDeleted(selectedPatient.id);
+        onPatientDeleted(selectedPatient.rut);
+        window.alert('Paciente eliminado exitosamente.');
       } else {
         alert('No se pudo eliminar el paciente.');
       }

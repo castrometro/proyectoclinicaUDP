@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User, Group
 from .models import Paciente, FichaClinica, DocenteUser
 from .serializers import PacienteSerializer, FichaClinicaSerializer, UserSerializer
-from .permissions import IsAdmin, IsDocente, IsEstudiante
+from .permissions import IsAdmin, IsDocente, IsEstudiante, IsAdminOrDocente
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -44,12 +44,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class PacienteViewSet(viewsets.ModelViewSet):
     queryset = Paciente.objects.all()
     serializer_class = PacienteSerializer
-    permission_classes = [IsAuthenticated]  # Requiere autenticación
-
-    def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAdmin() | IsDocente()]  # Solo Admin o Docente pueden modificar o eliminar
-        return [IsAuthenticated()]  # Permite ver a todos los usuarios autenticados
+    permission_classes = [IsAuthenticated, IsAdminOrDocente]  # Requiere autenticación
 
 
 class FichaClinicaViewSet(viewsets.ModelViewSet):
