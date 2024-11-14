@@ -31,12 +31,13 @@ class PacienteSerializer(serializers.ModelSerializer):
 
 class FichaClinicaSerializer(serializers.ModelSerializer):
     creado_por_username = serializers.CharField(source='creado_por.username', read_only=True)
+    modificado_por_username = serializers.CharField(source='modificado_por.username', read_only=True)
 
     class Meta:
         model = FichaClinica
         fields = [
             'id', 'id_paciente', 'fecha_creacion', 'fecha_modificacion', 
-            'creado_por_username', 'modificado_por', 'motivo_consulta', 
+            'creado_por_username', 'modificado_por_username', 'motivo_consulta', 
             'anamnesis', 'examen_fisico', 'diagnostico', 'intervenciones', 
             'factores', 'rau_necesidades', 'instrumentos_aplicados'
         ]

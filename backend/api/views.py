@@ -61,6 +61,14 @@ class FichaClinicaViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         # Actualiza el usuario que modifica la ficha clínica
         serializer.save(modificado_por=self.request.user)
+    def get_queryset(self):
+        queryset = FichaClinica.objects.all()
+        id_paciente = self.request.query_params.get('id_paciente', None)
+        
+        if id_paciente is not None:
+            queryset = queryset.filter(id_paciente__rut=id_paciente)
+            
+        return queryset
 
 
 

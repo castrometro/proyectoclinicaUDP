@@ -12,6 +12,11 @@ export default function GestionPacientes() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showCrearPaciente, setShowCrearPaciente] = useState(false);
   const navigate = useNavigate();
+  const handleLogout = () => {
+    console.log('Cerrando sesión...');
+    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
+    navigate('/iniciar-sesion'); // Redirige a la página de inicio de sesión
+  };
 
   // Cargar pacientes al montar el componente
   useEffect(() => {
@@ -22,11 +27,7 @@ export default function GestionPacientes() {
     fetchPacientes();
   }, []);
 
-  // Función para manejar el cierre de sesión
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
-    navigate('/iniciar-sesion'); // Redirige a la página de inicio de sesión
-  };
+ 
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
