@@ -1,20 +1,21 @@
 // FichaPaciente.js
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SelectorFichaClinica from '../components/SelectorFichaClinica';
 import InformacionFicha from '../components/InformacionFicha';
+import CrearFicha from '../components/CrearFicha'; // Importar el nuevo componente
 import { getFichaById } from '../utils/fichasService';
 import { getPacienteByRut } from '../utils/pacientesService';
 
+
 export default function FichaPaciente() {
   const { rut } = useParams();
-  console.log('rut:',rut);
   const [paciente, setPaciente] = useState(null);
   const [selectedFichaId, setSelectedFichaId] = useState(null);
   const [selectedFicha, setSelectedFicha] = useState(null);
+  const [showCrearFicha, setShowCrearFicha] = useState(false); // Estado para mostrar el formulario de creación
   const navigate = useNavigate();
   const handleLogout = () => {
     console.log('Cerrando sesión...');
@@ -28,10 +29,8 @@ export default function FichaPaciente() {
       setPaciente(data);
     };
 
-    // Limpiar cualquier ficha previa cuando cambia el `rut`
     setSelectedFichaId(null);
     setSelectedFicha(null);
-
     fetchPaciente();
   }, [rut]);
 
@@ -50,17 +49,33 @@ export default function FichaPaciente() {
     setSelectedFicha(null);
   };
 
+  const handleCrearFichaToggle = () => {
+    setShowCrearFicha(!showCrearFicha); // Alternar la visibilidad del formulario
+  };
+
+  const handleFichaDelete = () => {
+    setSelectedFichaId(null);
+    setSelectedFicha(null);
+    window.location.reload(); // Recargar la página para mostrar la ficha eliminada
+  }
+  const handleFichaUpdate = () => {
+    setSelectedFichaId(null);
+    setSelectedFicha(null);
+    window.location.reload(); // Recargar la página para mostrar la ficha actualizada
+  }
+
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
     logoAlt: "UDP Logo",
     menuItems: [
-        { text: "Inicio", 
-            link: "/" },],
-        circleButton: {
-            text: "Cerrar Sesión",
-            onClick: handleLogout // Usa onClick para el cierre de sesión
-        }
-    };
+      { text: "Inicio", link: "/" },
+      { text: "Panel Admin", link: "/admin-menu" }
+    ],
+    circleButton: {
+      text: "Cerrar Sesión",
+      onClick: handleLogout // Usa onClick para el cierre de sesión
+    }
+  };
 
   if (!paciente) {
     return (
@@ -80,12 +95,23 @@ export default function FichaPaciente() {
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Ficha del paciente: {paciente.nombre} {paciente.apellido}</h1>
         <p className="text-lg text-gray-600 mb-6">RUT: {paciente.rut}</p>
 
-        {/* Pasar solo el rut al SelectorFichaClinica */}
+        <button onClick={handleCrearFichaToggle} className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
+          {showCrearFicha ? "Cancelar" : "Añadir nueva ficha"}
+        </button>
+
+        {showCrearFicha && (
+          <CrearFicha rut={rut} onClose={handleCrearFichaToggle} />
+        )}
+
         <SelectorFichaClinica rut={rut} onSelectFichaId={handleFichaSelect} />
 
-        {/* Mostrar los detalles de la ficha seleccionada en InformacionFicha */}
         {selectedFicha && (
-          <InformacionFicha fichaId={selectedFichaId} onClose={handleFichaClose} />
+          <InformacionFicha 
+            fichaId={selectedFichaId} 
+            onClose={handleFichaClose} 
+            onDelete={handleFichaDelete}
+            onUpdate={handleFichaUpdate}
+          />
         )}
       </main>
 
@@ -93,4 +119,5 @@ export default function FichaPaciente() {
     </div>
   );
 }
+
 

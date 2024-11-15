@@ -36,8 +36,9 @@ export const saveFichaClinica = async (fichaData) => {
   }
 };
 
+
 // Función para actualizar una ficha clínica específica
-export const updateFichaClinica = async (id, fichaData) => {
+export const updateFichaById = async (id, fichaData) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.put(`${API_URL}${id}/`, fichaData, {
@@ -66,6 +67,21 @@ export const deleteFichaClinica = async (id) => {
   } catch (error) {
     console.error("Error al eliminar la ficha clínica:", error);
     return false;
+  }
+};
+
+export const deleteFichaById = async (fichaId) => {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.delete(`${API_URL}${fichaId}/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar ficha clínica:", error);
+    throw error;
   }
 };
 

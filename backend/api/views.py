@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User, Group
 from .models import Paciente, FichaClinica
 from .serializers import PacienteSerializer, UserSerializer, FichaClinicaSerializer
-from .permissions import  IsAdminOrDocente, IsAdminOrDocenteOrReadOnly
+from .permissions import  PermisosPacientes, IsAdminOrDocenteOrReadOnly
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -45,7 +45,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class PacienteViewSet(viewsets.ModelViewSet):
     queryset = Paciente.objects.all()
     serializer_class = PacienteSerializer
-    permission_classes = [IsAuthenticated, IsAdminOrDocente]  # Requiere autenticación
+    permission_classes = [IsAuthenticated, PermisosPacientes]  # Requiere autenticación
     
 
 

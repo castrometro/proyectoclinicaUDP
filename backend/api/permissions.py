@@ -32,3 +32,15 @@ class IsAdminOrDocenteOrReadOnly(BasePermission):
             return request.user.is_authenticated
         # Solo Administrador o Docente pueden editar o eliminar (PUT, PATCH, DELETE)
         return request.user.groups.filter(name__in=['Administrador', 'Docente']).exists()
+
+class PermisosPacientes(BasePermission):
+    """
+    Permite GET y POST a todos los usuarios autenticados.
+    Solo permite PUT y DELETE a los administradores y docentes.
+    """
+    def has_permission(self, request, view):
+        # Permitir acceso de solo lectura (GET) y creación (POST) a todos los usuarios autenticados
+        if request.method in SAFE_METHODS or request.method == "POST":
+            return request.user.is_authenticated
+        # Permitir PUT y DELETE solo a administradores y docentes
+        return request.user.groups.filter(name__in=['Administrador', 'Docente']).exists()
