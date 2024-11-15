@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User, Group
-from .models import Paciente, FichaClinica
+from .models import Paciente, FichaClinica, DocenteUser, EstudianteUser
 from .serializers import PacienteSerializer, UserSerializer, FichaClinicaSerializer
-from .permissions import  PermisosPacientes, IsAdminOrDocenteOrReadOnly
+from .permissions import *
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -123,3 +123,30 @@ def list_pacientes(request):
         pacientes = Paciente.objects.all()
     serializer = PacienteSerializer(pacientes, many=True)
     return Response(serializer.data)
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAdmin])
+def total_pacientes(request):
+    count = Paciente.objects.count()
+    return Response({"total": count})
+
+@api_view(['GET'])
+@permission_classes([IsAdmin])
+def total_docentes(request):
+    count = DocenteUser.objects.count()
+    return Response({"total": count})
+
+@api_view(['GET'])
+@permission_classes([IsAdmin])
+def total_estudiantes(request):
+    count = EstudianteUser.objects.count()
+    return Response({"total": count})
+
+@api_view(['GET'])
+@permission_classes([IsAdmin])
+def total_fichas(request):
+    count = FichaClinica.objects.count()
+    return Response({"total": count})

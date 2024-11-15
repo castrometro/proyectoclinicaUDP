@@ -4,19 +4,30 @@ import AdministradorDashboard from '../components/AdministradorDashboard'
 import GestionUsuarios from '../components/GestionUsuarios'
 import ConfiguracionSistema from '../components/ConfiguracionSistema'
 import ReportesEstadisticas from '../components/ReportesEstadisticas'
+import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom';
 
 export default function GestionAdministrador() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    console.log('Cerrando sesión...');
+    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
+    navigate('/iniciar-sesion'); // Redirige a la página de inicio de sesión
+  };
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
     logoAlt: "UDP Logo",
     menuItems: [
       { text: "Inicio", link: "/" },
-      { text: "Panel Admin", link: "/admin-menu" },
-      { text: "Cerrar Sesión", link: "/logout" }
-    ]
-  }
+      { text: "Panel Admin", link: "/admin-menu" }
+    ],
+    circleButton: {
+      text: "Cerrar Sesión",
+      onClick: handleLogout // Usa onClick para el cierre de sesión
+    }
+  };
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -70,6 +81,7 @@ export default function GestionAdministrador() {
           {renderActiveComponent()}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

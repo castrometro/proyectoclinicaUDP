@@ -14,5 +14,8 @@ urlpatterns = [
     path('auth/login/', CustomTokenObtainPairView.as_view(), name='token_de_login'),
     path('menu-options/', get_menu_options, name='get_menu_options'),
     path('current-user/', get_current_user, name='get_current_user'),
-
+    path('dashboard/total_fichas', total_fichas, name='total_fichas'),
+    path('dashboard/total_pacientes', total_pacientes, name='total_pacientes'),
+    path('dashboard/total_docentes', total_docentes, name='total_docentes'),
+    path('dashboard/total_estudiantes', total_estudiantes, name='total_estudiantes')
 ]
