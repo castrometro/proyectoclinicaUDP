@@ -25,6 +25,22 @@ export const addDocente = async (docente) => {
   return response.data;
 };
 
+export const searchDocentes = async (searchTerm) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`http://127.0.0.1:8000/api/docentes/?search=${searchTerm}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al buscar docentes:", error);
+    return [];
+  }
+};
+
+
 // Actualizar docente
 export const updateDocente = async (id, docente) => {
   const token = localStorage.getItem('token');

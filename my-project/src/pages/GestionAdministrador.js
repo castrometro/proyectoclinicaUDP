@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
 import AdministradorDashboard from '../components/AdministradorDashboard'
-import GestionUsuarios from '../components/GestionUsuarios'
+// import GestionUsuarios from '../components/GestionUsuarios'
 import ConfiguracionSistema from '../components/ConfiguracionSistema'
 import ReportesEstadisticas from '../components/ReportesEstadisticas'
 import Footer from '../components/Footer'
@@ -33,8 +33,8 @@ export default function GestionAdministrador() {
     switch (activeTab) {
       case 'dashboard':
         return <AdministradorDashboard />
-      case 'usuarios':
-        return <GestionUsuarios />
+      // case 'usuarios':
+      //   return <GestionUsuarios />
       case 'configuracion':
         return <ConfiguracionSistema />
       case 'reportes':
