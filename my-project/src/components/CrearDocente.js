@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function CrearDocente({ onClose, onCreateTeacher }) {
+export default function CrearDocente({ onClose, onCreateDocente }) {
   const [docente, setDocente] = useState({
     username: '',
     first_name: '',
@@ -18,7 +18,7 @@ export default function CrearDocente({ onClose, onCreateTeacher }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await onCreateTeacher(docente); // Llama a la función para crear el docente
+      await onCreateDocente(docente); // Llama a la función para crear el docente
       onClose(); // Cierra el modal si la creación fue exitosa
     } catch (err) {
       setError('Hubo un problema al crear el docente.'); // Muestra un mensaje de error

@@ -4,15 +4,20 @@ const API_URL = 'http://127.0.0.1:8000/api/docentes/';
 
 // Obtener lista de docentes
 export const getDocentes = async () => {
-  const token = localStorage.getItem('token');
-  const response = await axios.get(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`
+  try {
+    const response = await axios.get(API_URL, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    if (error.response && error.response.status === 401) { // Esto será capturado en el componente
+      throw error;
+    } else {
+      throw error;
     }
-  });
-  console.log('docentes: ', response.data);
-  return response.data;
+  }
 };
+
 
 // Crear docente
 export const addDocente = async (docente) => {

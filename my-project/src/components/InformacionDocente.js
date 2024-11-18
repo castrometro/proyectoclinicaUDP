@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, User, Calendar } from 'lucide-react';
+import { User, Edit, Trash2,Mail, } from 'lucide-react';
 import { deleteDocente, updateDocente } from '../utils/docentesService'; // Asegúrate de implementar estos servicios
 
 export default function InformacionDocente({ selectedDocente, onDocenteDeleted, onDocenteUpdated }) {
@@ -15,8 +15,11 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
   };
 
   const handleSaveChanges = async () => {
+    const { password, ...dataSinContraseña } = editedDocente; // Excluye password del payload
     try {
-      const updatedDocente = await updateDocente(editedDocente.id, editedDocente);
+      console.log(dataSinContraseña); // Antes de enviarlo al backend
+
+      const updatedDocente = await updateDocente(editedDocente.id, dataSinContraseña);
       alert("Docente actualizado correctamente.");
       setIsEditing(false);
       onDocenteUpdated(updatedDocente);
@@ -25,9 +28,11 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
       alert("Error al actualizar el docente.");
     }
   };
+  
+  
 
   const handleDelete = async () => {
-    if (window.confirm(`¿Está seguro de eliminar al docente ${selectedDocente.nombre} ${selectedDocente.apellido}?`)) {
+    if (window.confirm(`¿Está seguro de eliminar al docente ${selectedDocente.first_name} ${selectedDocente.last_name}?`)) {
       try {
         await deleteDocente(selectedDocente.id);
         alert("Docente eliminado correctamente.");
@@ -54,13 +59,29 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
           {isEditing ? (
             <input
               type="text"
-              name="nombre"
-              value={editedDocente.nombre}
+              name="first_name"
+              value={editedDocente.first_name}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedDocente.nombre
+            selectedDocente.first_name
+            )}
+        </p>
+
+        <p className="flex items-center">
+          <User size={16} className="mr-2 text-gray-500" />
+          <span className="font-semibold mr-2">Apellido:</span>
+          {isEditing ? (
+            <input
+              type="text"
+              name="last_name"
+              value={editedDocente.last_name}
+              onChange={handleEditChange}
+              className="border border-gray-300 rounded-md p-1"
+            />
+          ) : (
+            selectedDocente.last_name
           )}
         </p>
 
@@ -71,17 +92,33 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
             <input
               type="email"
               name="correo"
-              value={editedDocente.correo}
+              value={editedDocente.email}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedDocente.correo
+            selectedDocente.email
+          )}
+        </p>
+
+        <p className="flex items-center">
+          <User size={16} className="mr-2 text-gray-500" />
+          <span className="font-semibold mr-2">Usuario:</span>
+          {isEditing ? (
+            <input
+              type="text"
+              name="username"
+              value={editedDocente.username}
+              onChange={handleEditChange}
+              className="border border-gray-300 rounded-md p-1"
+            />
+          ) : (
+            selectedDocente.username
           )}
         </p>
 
         {/* Teléfono */}
-        <p className="flex items-center">
+        {/* <p className="flex items-center">
           <Phone size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Teléfono:</span>
           {isEditing ? (
@@ -95,14 +132,14 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
           ) : (
             selectedDocente.telefono
           )}
-        </p>
+        </p> */}
 
         {/* Fecha de incorporación */}
-        <p className="flex items-center">
+        {/* <p className="flex items-center">
           <Calendar size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Fecha de incorporación:</span>
           {selectedDocente.fecha_incorporacion}
-        </p>
+        </p> */}
       </div>
 
       {/* Botones de acción */}
@@ -123,20 +160,20 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
             </button>
           </>
         ) : (
-          <>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+          <div className="flex space-x-4 mt-4">
+            <button 
+              onClick={() => setIsEditing(true)} 
+              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             >
-              Editar
+              <Edit size={16} className="mr-2" /> Editar
             </button>
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 text-white px-4 py-2 rounded-md"
+            <button 
+              onClick={handleDelete} 
+              className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
-              Eliminar
+              <Trash2 size={16} className="mr-2" /> Eliminar
             </button>
-          </>
+          </div>
         )}
       </div>
     </div>

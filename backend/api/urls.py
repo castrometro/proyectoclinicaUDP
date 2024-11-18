@@ -5,7 +5,8 @@ from .views import *
 # Crea el router y registra las vistas
 router = DefaultRouter()
 router.register(r'pacientes', PacienteViewSet)
-router.register(r'docentes', DocenteViewSet)
+router.register(r'docentes', DocenteViewSet, basename='docentes')  # Registro de DocenteViewSet
+router.register(r'estudiantes', EstudianteViewSet, basename='estudiantes')  # Registro de EstudianteViewSet
 router.register(r'fichas-clinicas', FichaClinicaViewSet)  # Registro de FichaClinicaViewSet
 
 # Define las URLs de la aplicación api

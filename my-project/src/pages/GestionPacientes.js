@@ -13,6 +13,8 @@ export default function GestionPacientes() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showCrearPaciente, setShowCrearPaciente] = useState(false);
   const navigate = useNavigate();
+
+
   const handleLogout = () => {
     console.log('Cerrando sesión...');
     localStorage.removeItem('token'); // Elimina el token del almacenamiento local
@@ -22,8 +24,18 @@ export default function GestionPacientes() {
   // Cargar pacientes al montar el componente
   useEffect(() => {
     const fetchPacientes = async () => {
-      const data = await getPacientes();
-      setPacientes(Array.isArray(data) ? data : []);
+      try {
+        const data = await getPacientes();
+        setPacientes(Array.isArray(data) ? data : []);
+      }catch (error) {
+        if (error.response && error.response.status === 401) {
+          console.error("Token expirado.");
+          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+         handleLogout(); 
+        } else {
+          console.error("Error al cargar pacientes:", error);
+        }
+      }
     };
     fetchPacientes();
   }, []);
@@ -52,7 +64,7 @@ export default function GestionPacientes() {
     if (createdPatient) {
       // Actualiza el estado pacientes para incluir el nuevo paciente
       setPacientes(prevPacientes => [...prevPacientes, createdPatient]);
-      setSelectedPatient(createdPatient); // Opcional: Selecciona el nuevo paciente automáticamente
+      // setSelectedPatient(createdPatient); // Opcional: Selecciona el nuevo paciente automáticamente
     }
     setShowCrearPaciente(false); // Cierra el modal después de crear el paciente
   };

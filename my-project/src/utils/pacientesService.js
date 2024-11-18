@@ -14,8 +14,12 @@ export const getPacientes = async () => {
     });
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error("Error al obtener pacientes:", error);
-    return [];
+    if (error.response && error.response.status === 401) {
+      throw new Error('Token expirado'); // Esto será capturado en el componente
+    }else{
+      throw error;
+    }
+    
   }
 };
 

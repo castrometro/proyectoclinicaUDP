@@ -14,6 +14,8 @@ export default function GestionDocentes() {
   const [showCrearDocente, setShowCrearDocente] = useState(false);
   const navigate = useNavigate();
 
+
+
   const handleLogout = () => {
     console.log('Cerrando sesión...');
     localStorage.removeItem('token');
@@ -23,8 +25,18 @@ export default function GestionDocentes() {
   // Cargar docentes al montar el componente
   useEffect(() => {
     const fetchDocentes = async () => {
-      const data = await getDocentes();
-      setDocentes(Array.isArray(data) ? data : []);
+      try {
+        const data = await getDocentes();
+        setDocentes(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          console.error("Token expirado.");
+          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.'); // Espera 5 segundos antes de redirigir
+          handleLogout();
+        } else {
+          console.error("Error al cargar docentes:", error);
+        }
+      }
     };
     fetchDocentes();
   }, []);
@@ -50,24 +62,44 @@ export default function GestionDocentes() {
     const createdDocente = await addDocente(newDocente);
     if (createdDocente) {
       setDocentes(prevDocentes => [...prevDocentes, createdDocente]);
-      setSelectedDocente(createdDocente);
+      setSelectedDocente(null);
     }
     setShowCrearDocente(false);
+    window.location.reload();
   };
 
   const handleDocenteDeletion = (id) => {
-    setDocentes(prevDocentes => prevDocentes.filter(d => d.id !== id));
+    setDocentes(prevDocentes => prevDocentes.filter(docente => docente.id !== id));
     setSelectedDocente(null);
+    //cargar página nuevamente
+    window.location.reload();
+    
+
   };
 
   const handleDocenteUpdate = () => {
     setSelectedDocente(null);
+    window.location.reload();
   };
+
+  // const handleSaveChanges = async () => {
+  //   const { password, ...dataSinContraseña } = editedDocente; // Excluye el campo password
+  //   try {
+  //     const updatedDocente = await updateDocente(editedDocente.id, dataSinContraseña);
+  //     alert("Docente actualizado correctamente.");
+  //     setIsEditing(false);
+  //     onDocenteUpdated(updatedDocente);
+  //   } catch (error) {
+  //     console.error("Error al actualizar docente:", error);
+  //     alert("Error al actualizar el docente.");
+  //   }
+  // };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header {...headerProps} />
       <main className="flex-grow container mx-auto px-4 py-8">
+        
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Gestión de Docentes</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

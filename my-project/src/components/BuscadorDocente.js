@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function BuscadorDocente({ docentes, onSelectTeacher }) {
+export default function BuscadorDocente({ docentes, onSelectDocente }) {
   return (
     <div className="bg-white border border-gray-300 rounded-md shadow-lg p-4 max-h-80 overflow-auto">
       <h2 className="text-lg font-semibold mb-4">Lista de Docentes</h2>
@@ -8,7 +8,7 @@ export default function BuscadorDocente({ docentes, onSelectTeacher }) {
         {docentes.map((docente) => (
           <li
             key={docente.id}
-            onClick={() => onSelectTeacher(docente)}
+            onClick={() => onSelectDocente(docente)}
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center"
           >
             <div>

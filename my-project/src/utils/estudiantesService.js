@@ -1,34 +1,51 @@
-const ESTUDIANTES_STORAGE_KEY = 'estudiantes';
+import axios from 'axios';
 
-export const getEstudiantes = () => {
-  const storedEstudiantes = localStorage.getItem(ESTUDIANTES_STORAGE_KEY);
-  if (storedEstudiantes) {
-    return JSON.parse(storedEstudiantes);
+const API_URL = 'http://127.0.0.1:8000/api/estudiantes/';
+
+// Obtener lista de estudiantes
+export const getEstudiantes = async () => {
+  try {
+    const response = await axios.get(API_URL, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw error; // Esto será manejado en el componente
+    } else {
+      throw error;
+    }
   }
-  return [];
 };
 
-export const addEstudiante = (estudiante) => {
-  const estudiantes = getEstudiantes();
-  const newId = estudiantes.length > 0 ? Math.max(...estudiantes.map(e => e.id)) + 1 : 1;
-  const newEstudiante = { ...estudiante, id: newId };
-  estudiantes.push(newEstudiante);
-  localStorage.setItem(ESTUDIANTES_STORAGE_KEY, JSON.stringify(estudiantes));
-  return newEstudiante;
+// Crear estudiante
+export const addEstudiante = async (estudiante) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.post(API_URL, estudiante, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
 
-export const updateEstudiante = (estudiante) => {
-  const estudiantes = getEstudiantes();
-  const index = estudiantes.findIndex(e => e.id === estudiante.id);
-  if (index !== -1) {
-    estudiantes[index] = estudiante;
-    localStorage.setItem(ESTUDIANTES_STORAGE_KEY, JSON.stringify(estudiantes));
-  }
-  return estudiante;
+// Actualizar estudiante
+export const updateEstudiante = async (id, estudiante) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.put(`${API_URL}${id}/`, estudiante, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
 
-export const deleteEstudiante = (id) => {
-  const estudiantes = getEstudiantes();
-  const newEstudiantes = estudiantes.filter(e => e.id !== id);
-  localStorage.setItem(ESTUDIANTES_STORAGE_KEY, JSON.stringify(newEstudiantes));
+// Eliminar estudiante
+export const deleteEstudiante = async (id) => {
+  const token = localStorage.getItem('token');
+  await axios.delete(`${API_URL}${id}/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

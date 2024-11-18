@@ -95,7 +95,7 @@ def get_current_user(request):
     return Response(serializer.data)
 
 class DocenteViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.filter(groups__name='Docentes')
+    queryset = User.objects.filter(groups__name='Docente')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -106,7 +106,26 @@ class DocenteViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        group = Group.objects.get(name='Docentes')
+        group = Group.objects.get(name='Docente')
+        user.groups.add(group)
+
+class EstudianteViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(groups__name='Estudiante')  # Filtra usuarios en el grupo 'Estudiantes'
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        # Si el usuario pertenece al grupo 'Administrador', permite cualquier acción autenticada
+        user_auth = ["Administrador", "Docente"]
+        if self.request.user.groups.filter(name__in=user_auth).exists():
+            return [permissions.IsAuthenticated()]
+        # De lo contrario, restringe a permisos de administrador
+        return [permissions.IsAdminUser()]
+
+    def perform_create(self, serializer):
+        # Guarda el usuario y lo agrega al grupo 'Estudiantes'
+        user = serializer.save()
+        group = Group.objects.get(name='Estudiante')  # Obtiene el grupo 'Estudiante'
         user.groups.add(group)
 
 

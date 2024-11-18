@@ -48,6 +48,7 @@ export default function MenuAdmin() {
         const options = await getMenuOptions();
         setMenuOptions(options);
       } catch (error) {
+        window.alert("Hubo un problema al obtener las opciones de menú.");
         console.error("Error al obtener las opciones de menú:", error);
         setMenuOptions([]); // Establece las opciones como vacías si hay un error
       }

@@ -9,7 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': False}  # `required` False para actualizaciones
+        }
 
     def create(self, validated_data):
         user = User(
@@ -21,6 +23,23 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def update(self, instance, validated_data):
+        # Extraer contraseña si está presente
+        password = validated_data.pop('password', None)
+
+        # Actualizar los demás campos
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # Si se proporcionó contraseña, actualizarla
+        if password:
+            instance.set_password(password)
+
+        # Guardar cambios
+        instance.save()
+        return instance
+
 
 class PacienteSerializer(serializers.ModelSerializer):
     edad = serializers.ReadOnlyField()  # Campo de solo lectura calculado automáticamente
