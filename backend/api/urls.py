@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import *
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 # Crea el router y registra las vistas
 router = DefaultRouter()
@@ -18,5 +19,9 @@ urlpatterns = [
     path('dashboard/total_fichas', total_fichas, name='total_fichas'),
     path('dashboard/total_pacientes', total_pacientes, name='total_pacientes'),
     path('dashboard/total_docentes', total_docentes, name='total_docentes'),
-    path('dashboard/total_estudiantes', total_estudiantes, name='total_estudiantes')
+    path('dashboard/total_estudiantes', total_estudiantes, name='total_estudiantes'),
+    path('pacientes/search/', list_pacientes, name='list_pacientes'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify')
 ]

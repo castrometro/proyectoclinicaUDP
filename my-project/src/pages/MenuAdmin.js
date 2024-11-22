@@ -1,10 +1,10 @@
-// MenuAdmin.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ChevronRight } from 'lucide-react';
 import { getMenuOptions } from '../utils/menuService';
+import { verifyToken } from '../utils/authService';
 
 const AdminCard = ({ title, link }) => (
   <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
@@ -22,41 +22,46 @@ const AdminCard = ({ title, link }) => (
 export default function MenuAdmin() {
   const navigate = useNavigate();
   const [menuOptions, setMenuOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasVerified = useRef(false); // Evitar múltiples verificaciones
 
-  // Función para cerrar sesión
   const handleLogout = () => {
     console.log('Cerrando sesión...');
-    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
-    navigate('/iniciar-sesion'); // Redirige a la página de inicio de sesión
+    localStorage.removeItem('token');
+    navigate('/iniciar-sesion');
   };
 
-  // Propiedades del encabezado
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
     logoAlt: "UDP Logo",
     menuItems: [{ text: "Inicio", link: "/" }],
     circleButton: {
       text: "Cerrar Sesión",
-      onClick: handleLogout
-    }
+      onClick: handleLogout,
+    },
   };
 
-  // Carga las opciones de menú desde el backend cuando el componente se monta
   useEffect(() => {
-    const fetchMenuOptions = async () => {
-      try {
-        const options = await getMenuOptions();
-        setMenuOptions(options);
-      } catch (error) {
-        window.alert("Hubo un problema al obtener las opciones de menú.");
-        console.error("Error al obtener las opciones de menú:", error);
-        setMenuOptions([]); // Establece las opciones como vacías si hay un error
+    const fetchMenu = async () => {
+      if (!hasVerified.current) {
+        const isValid = await verifyToken(navigate);
+        if (isValid) {
+          hasVerified.current = true;
+          try {
+            const options = await getMenuOptions();
+            setMenuOptions(options);
+          } catch (error) {
+            console.error('Error al obtener las opciones de menú:', error);
+            window.alert('Hubo un problema al obtener las opciones de menú.');
+          }
+        }
       }
+      setIsLoading(false); // Finaliza la carga
     };
-    fetchMenuOptions();
-  }, []);
 
-  // Define las tarjetas de administración en función de las opciones de menú permitidas
+    fetchMenu();
+  }, [navigate]);
+
   const adminCards = [
     { title: "Gestión de Pacientes", link: "/gestion-pacientes" },
     { title: "Gestión de Docentes", link: "/gestion-docentes" },
@@ -64,15 +69,14 @@ export default function MenuAdmin() {
     { title: "Gestión de Administrador", link: "/gestion-administrador" },
   ];
 
-  // Filtra las tarjetas en función de las opciones de menú permitidas
   const filteredAdminCards = adminCards.filter(card =>
     menuOptions.includes(card.title)
   );
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header {...headerProps} />  {/* Header recibe las props con el botón de cerrar sesión */}
-      <main className="flex-grow">
+      <Header {...headerProps} />
+      <main className="flex-grow relative">
         <div className="relative">
           <img
             src="/images/PanelAdmin.png"
@@ -86,11 +90,36 @@ export default function MenuAdmin() {
           </div>
         </div>
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredAdminCards.map((card, index) => (
-              <AdminCard key={index} {...card} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <svg
+                className="animate-spin h-10 w-10 text-blue-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredAdminCards.map((card, index) => (
+                <AdminCard key={index} {...card} />
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />

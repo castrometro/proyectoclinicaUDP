@@ -6,79 +6,63 @@ import CrearPacienteButton from '../components/CrearPacienteButton';
 import BuscadorPaciente from '../components/BuscadorPaciente';
 import InformacionPaciente from '../components/InformacionPaciente';
 import CrearPaciente from '../components/CrearPaciente';
-import { getPacientes, addPaciente } from '../utils/pacientesService';
+import { verifyToken } from '../utils/authService';
+
+const userRole = localStorage.getItem('userRole');
+console.log(userRole);
 
 export default function GestionPacientes() {
   const [pacientes, setPacientes] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showCrearPaciente, setShowCrearPaciente] = useState(false);
+  const [hasVerified, setHasVerified] = useState(false); // Nueva bandera para controlar la ejecución única
   const navigate = useNavigate();
 
-
-  const handleLogout = () => {
-    console.log('Cerrando sesión...');
-    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
-    navigate('/iniciar-sesion'); // Redirige a la página de inicio de sesión
-  };
-
-  // Cargar pacientes al montar el componente
+  // Verifica si el token es válido al montar el componente
   useEffect(() => {
-    const fetchPacientes = async () => {
-      try {
-        const data = await getPacientes();
-        setPacientes(Array.isArray(data) ? data : []);
-      }catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error("Token expirado.");
-          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-         handleLogout(); 
-        } else {
-          console.error("Error al cargar pacientes:", error);
-        }
+    const checkSession = async () => {
+      if (!hasVerified) {
+        const isValid = await verifyToken(navigate);
+        setHasVerified(isValid); // Asegura que solo se ejecuta una vez
       }
     };
-    fetchPacientes();
-  }, []);
+    checkSession();
+  }, [navigate, hasVerified]);
 
- 
+  const handleSelectPatient = (patient) => {
+    setSelectedPatient(patient);
+  };
+
+  const handleCreatePatient = (newPatient) => {
+    setPacientes([...pacientes, newPatient]);
+    setShowCrearPaciente(false);
+  };
+
+  const handlePatientDeletion = (rut) => {
+    setPacientes(prevPacientes => prevPacientes.filter(p => p.rut !== rut));
+    setSelectedPatient(null);
+  };
+
+  const handlePatientUpdate = () => {
+    setSelectedPatient(null);
+  };
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
     logoAlt: "UDP Logo",
     menuItems: [
       { text: "Inicio", link: "/" },
-      { text: "Panel Admin", link: "/admin-menu" }
+      { text: "Panel Admin", link: "/admin-menu" },
     ],
     circleButton: {
       text: "Cerrar Sesión",
-      onClick: handleLogout // Usa onClick para el cierre de sesión
-    }
+      onClick: () => {
+        console.log('Cerrando sesión...');
+        localStorage.removeItem('token');
+        navigate('/iniciar-sesion');
+      },
+    },
   };
-
-  const handleSelectPatient = (patient) => {
-    setSelectedPatient(patient);
-  };
-
-  const handleCreatePatient = async (newPatient) => {
-    const createdPatient = await addPaciente(newPatient);
-    if (createdPatient) {
-      // Actualiza el estado pacientes para incluir el nuevo paciente
-      setPacientes(prevPacientes => [...prevPacientes, createdPatient]);
-      // setSelectedPatient(createdPatient); // Opcional: Selecciona el nuevo paciente automáticamente
-    }
-    setShowCrearPaciente(false); // Cierra el modal después de crear el paciente
-  };
-
-  const handlePatientDeletion = (rut) => {
-    // Filtra el paciente eliminado de la lista
-    setPacientes(prevPacientes => prevPacientes.filter(p => p.rut !== rut));
-    setSelectedPatient(null); // Deselecciona el paciente eliminado
-  };
-
-  const handlePatientUpdate = () => {
-    setSelectedPatient(null); // Deselecciona el paciente después de una edición exitosa
-  };
-
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -87,20 +71,21 @@ export default function GestionPacientes() {
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Gestión de Pacientes</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-3">
-            <CrearPacienteButton onClick={() => setShowCrearPaciente(true)} />
-          </div>
+          {userRole !== 'Estudiante' && (
+            <div className="md:col-span-3">
+              <CrearPacienteButton onClick={() => setShowCrearPaciente(true)} />
+            </div>
+          )}
 
           <div className="md:col-span-1">
-            {/* Pasamos la lista de pacientes al componente BuscadorPaciente */}
-            <BuscadorPaciente pacientes={pacientes} onSelectPatient={handleSelectPatient} />
+            <BuscadorPaciente onSelectPatient={handleSelectPatient} />
           </div>
 
           <div className="md:col-span-2">
             {selectedPatient && <InformacionPaciente 
-            selectedPatient={selectedPatient} 
-            onPatientDeleted={handlePatientDeletion}
-            onPatientUpdated={handlePatientUpdate}
+              selectedPatient={selectedPatient} 
+              onPatientDeleted={handlePatientDeletion}
+              onPatientUpdated={handlePatientUpdate}
             />}
           </div>
         </div>

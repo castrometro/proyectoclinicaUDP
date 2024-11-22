@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 export const getMenuOptions = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -10,8 +9,12 @@ export const getMenuOptions = async () => {
     });
     return response.data.menu_options;
   } catch (error) {
-    console.error("Error al obtener las opciones de menú:", error);
+    if (error.response && error.response.status === 401) {
+      throw new Error('Sesión expirada'); // Lanza un error personalizado
+    }
+    console.error("Error desconocido", error);
     return [];
   }
 };
+
 
