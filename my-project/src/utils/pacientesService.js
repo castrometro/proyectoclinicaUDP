@@ -65,12 +65,24 @@ export const addPaciente = async (paciente) => {
         'Authorization': `Bearer ${token}`, // Agrega el token en los encabezados
       }
     });
-    return response.data;
+    return { success: true, data: response.data }; // Devuelve éxito con los datos
   } catch (error) {
     console.error("Error al crear paciente:", error);
-    return null;
+
+    if (error.response && error.response.status === 400) {
+      return {
+        success: false,
+        message: error.response.data?.message || 'El RUT ya existe. Por favor, use uno diferente.',
+      };
+    }
+
+    return {
+      success: false,
+      message: 'Ocurrió un error inesperado. Inténtelo nuevamente.',
+    };
   }
 };
+
 
 // Función para actualizar un paciente
 export const updatePaciente = async (id, paciente) => {

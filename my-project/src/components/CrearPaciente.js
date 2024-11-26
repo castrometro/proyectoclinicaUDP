@@ -1,48 +1,117 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
+import { addPaciente } from '../utils/pacientesService';
+import { verifyToken } from '../utils/authService';
+import { processRut } from '../utils/rutUtils';
 
 export default function CrearPaciente({ onClose, onCreatePatient }) {
   const [paciente, setPaciente] = useState({
     nombre: '',
-    apellido: '',  // Nuevo campo de apellido
+    apellido: '',
     rut: '',
-    fecha_nacimiento: '', // Cambia para que coincida con el backend
+    fecha_nacimiento: '',
     domicilio: '',
-    numero_telefono: '', // Cambia 'telefono' a 'numero_telefono'
-    correo: '', // Cambia 'correoElectronico' a 'correo'
+    numero_telefono: '',
+    correo: '',
     prevision: '',
-    edad: ''
-  })
+    edad: '',
+  });
 
-  useEffect(() => {
-    if (paciente.fecha_nacimiento) {
-      const today = new Date()
-      const birthDate = new Date(paciente.fecha_nacimiento)
-      let age = today.getFullYear() - birthDate.getFullYear()
-      const m = today.getMonth() - birthDate.getMonth()
+  const [isSaving, setIsSaving] = useState(false); // Control de carga
+  const [errorMessage, setErrorMessage] = useState(''); // Mensaje de error
+
+  const calculateAge = (fecha_nacimiento) => {
+    if (fecha_nacimiento) {
+      const today = new Date();
+      const birthDate = new Date(fecha_nacimiento);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--
+        age--;
       }
-      setPaciente(prev => ({ ...prev, edad: age }))
+      return age;
     }
-  }, [paciente.fecha_nacimiento])
+    return '';
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setPaciente(prev => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+  
+    if (name === 'rut') {
+      const allowedCharacters = /^[0-9.-]*$/; // Permitir solo números, puntos y guiones
+      if (allowedCharacters.test(value)) {
+        setPaciente((prev) => ({
+          ...prev,
+          [name]: value, // Permite el formato ingresado
+        }));
+      }
+    } else {
+      setPaciente((prev) => ({
+        ...prev,
+        [name]: value,
+        edad: name === 'fecha_nacimiento' ? calculateAge(value) : prev.edad,
+      }));
+    }
+  };
+  
+  
+  
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const pacienteData = { ...paciente }
-    delete pacienteData.edad  // Eliminar el campo edad antes de enviar
-    onCreatePatient(pacienteData)
-    onClose()
-  }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(''); // Limpia mensajes de error anteriores
+  
+    try {
+      const isValid = await verifyToken(); // Verifica el token antes de proceder
+      if (!isValid) {
+        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+        window.location.href = '/iniciar-sesion';
+        return;
+      }
+  
+      // Validar y formatear el RUT
+      try {
+        const formattedRut = processRut(paciente.rut); // Valida y formatea el RUT
+        paciente.rut = formattedRut; // Asigna el RUT formateado al objeto
+      } catch (error) {
+        setErrorMessage(error.message); // Muestra el error si el RUT no es válido
+        setIsSaving(false);
+        return;
+      }
+  
+      const pacienteData = { ...paciente };
+      delete pacienteData.edad; // Elimina el campo calculado antes de enviar
+  
+      const response = await addPaciente(pacienteData);
+  
+      if (response.success) {
+        onCreatePatient(response.data);
+        window.alert('Paciente creado exitosamente.');
+        onClose();
+      } else {
+        setErrorMessage(response.message); // Muestra el mensaje de error devuelto por la API
+      }
+    } catch (error) {
+      console.error('Error inesperado:', error);
+      setErrorMessage('Ocurrió un error inesperado. Inténtelo nuevamente.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
+  
+  
+  
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <h2 className="text-2xl font-bold mb-4">Crear Paciente</h2>
+        {errorMessage && (
+            <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {errorMessage}
+            </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
@@ -72,7 +141,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rut">
-              RUT u otro documento
+              RUT sin puntos, con guión y dígito verificador
             </label>
             <input
               type="text"
@@ -96,7 +165,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4">  
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edad">
               Edad
             </label>
@@ -104,10 +173,11 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
               type="text"
               name="edad"
               value={paciente.edad}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               readOnly
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200"
             />
           </div>
+
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="domicilio">
               Domicilio
@@ -164,13 +234,15 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              disabled={isSaving}
             >
-              Crear Paciente
+              {isSaving ? 'Guardando...' : 'Crear Paciente'}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              disabled={isSaving}
             >
               Cancelar
             </button>
@@ -178,5 +250,5 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
         </form>
       </div>
     </div>
-  )
+  );
 }

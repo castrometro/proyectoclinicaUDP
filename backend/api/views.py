@@ -11,6 +11,7 @@ from .permissions import *
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.db import transaction
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -169,3 +170,30 @@ def total_estudiantes(request):
 def total_fichas(request):
     count = FichaClinica.objects.count()
     return Response({"total": count})
+
+
+
+
+
+@api_view(['PUT'])
+def update_paciente(request, rut):
+    try:
+        paciente = Paciente.objects.get(rut=rut)
+    except Paciente.DoesNotExist:
+        return Response({'error': 'Paciente no encontrado.'}, status=404)
+
+    serializer = PacienteSerializer(paciente, data=request.data)
+    if serializer.is_valid():
+        new_rut = serializer.validated_data.get('rut')
+        
+        try:
+            with transaction.atomic():
+                # Actualiza las fichas relacionadas si es necesario
+                FichaClinica.objects.filter(paciente=paciente).update(paciente=new_rut)
+                serializer.save()
+            return Response(serializer.data, status=200)
+        except Exception as e:
+            return Response({'error': f'Error al actualizar: {str(e)}'}, status=400)
+
+    return Response(serializer.errors, status=400)
+

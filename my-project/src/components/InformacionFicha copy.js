@@ -1,52 +1,36 @@
 // InformacionFicha.js
 import React, { useState, useEffect } from 'react';
 import { getFichaById, deleteFichaById, updateFichaById } from '../utils/fichasService';
-import { verifyToken } from '../utils/authService'; // Agrega la función de verificación de token
-
 
 export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate }) {
   const [ficha, setFicha] = useState(null);
   const [editableFicha, setEditableFicha] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState(null);
   const userRole = localStorage.getItem('userRole');
 
   useEffect(() => {
     const fetchFicha = async () => {
       setIsLoading(true);
-      setError(null);
-  
       try {
-        // Verifica el token antes de hacer la solicitud
-        const isValid = await verifyToken();
-        if (!isValid) {
-          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-          window.location.href = '/iniciar-sesion';
-          return;
-        }
-  
-        // Realiza la solicitud para obtener la ficha
         const data = await getFichaById(fichaId);
         setFicha(data);
         setEditableFicha(data); // Copia para edición
+        setError(null);
       } catch (err) {
-        console.error('Error al cargar la ficha:', err);
-        setError('No se pudo cargar la ficha.');
+        setError("Error al cargar la ficha.");
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchFicha();
-  }, [fichaId]); // Se ejecuta cada vez que cambia el fichaId
+  }, [fichaId]);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
-
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -57,51 +41,26 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
   };
 
   const handleSave = async () => {
-    setIsProcessing(true);
-    setError(null);
-
     try {
-      const isValid = await verifyToken();
-      if (!isValid) {
-        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-        window.location.href = '/iniciar-sesion';
-        return;
-      }
-
       await updateFichaById(fichaId, editableFicha);
       setFicha(editableFicha);
       setIsEditing(false);
-      alert('Ficha actualizada correctamente.');
+      alert("Ficha actualizada correctamente.");
       onUpdate();
     } catch (err) {
-      console.error('Error al actualizar la ficha:', err);
-      setError('No se pudo guardar la ficha. Inténtelo nuevamente.');
-    } finally {
-      setIsProcessing(false);
+      alert("Error al actualizar la ficha.");
     }
   };
+
   const handleDelete = async () => {
-    if (!window.confirm('¿Estás seguro de eliminar esta ficha?')) return;
-
-    setIsProcessing(true);
-    setError(null);
-
-    try {
-      const isValid = await verifyToken();
-      if (!isValid) {
-        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-        window.location.href = '/iniciar-sesion';
-        return;
+    if (window.confirm("¿Estás seguro de eliminar esta ficha?")) {
+      try {
+        await deleteFichaById(fichaId);
+        onDelete();
+        alert("Ficha eliminada correctamente.");
+      } catch (err) {
+        alert("Error al eliminar la ficha.");
       }
-
-      await deleteFichaById(fichaId);
-      alert('Ficha eliminada correctamente.');
-      onDelete();
-    } catch (err) {
-      console.error('Error al eliminar la ficha:', err);
-      setError('No se pudo eliminar la ficha. Inténtelo nuevamente.');
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -124,9 +83,8 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
 
   if (isLoading) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8 flex items-center justify-center">
-        <div className="loader"></div> {/* Aquí puedes usar un spinner o cualquier indicador visual */}
-        <p className="text-center text-gray-500 ml-2">Cargando ficha...</p>
+      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+        <p className="text-center text-gray-500">Cargando ficha...</p>
       </div>
     );
   }
@@ -214,21 +172,15 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
               {isEditing ? (
                 <>
                   <button
-                  onClick={handleSave}
-                  disabled={isProcessing}
-                  className={`bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 ${
-                    isProcessing ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {isProcessing ? 'Guardando...' : 'Guardar'}
-                </button>
-                <button
-                  onClick={handleDiscard}
-                  disabled={isProcessing}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700"
-                >
-                  Descartar
-                </button>
+                    onClick={handleSave}
+                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                    Guardar
+                  </button>
+                  <button
+                    onClick={handleDiscard}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                    Descartar
+                  </button>
                 </>
               ) : (
                 <button
@@ -238,14 +190,10 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
                 </button>
               )}
               <button
-              onClick={handleDelete}
-              disabled={isProcessing}
-              className={`bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 ${
-                isProcessing ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              {isProcessing ? 'Eliminando...' : 'Eliminar'}
-            </button>
+                onClick={handleDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                Eliminar Ficha
+              </button>
             </div>
           )}
         </div>
