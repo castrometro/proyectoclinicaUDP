@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { addEstudiante } from '../utils/estudiantesService'; // Servicio para agregar estudiantes
+import { verifyToken } from '../utils/authService'; // Verificación de token
 
 export default function CrearEstudiante({ onClose, onCreateStudent }) {
   const [estudiante, setEstudiante] = useState({
@@ -9,6 +11,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
     password: '',
   });
   const [error, setError] = useState(null); // Estado para manejar errores
+  const [isCreating, setIsCreating] = useState(false); // Estado para manejar la carga
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,12 +20,32 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreating(true); // Activa la rueda de carga
+    setError(null); // Limpia errores previos
+
     try {
-      await onCreateStudent(estudiante); // Llama a la función para crear el estudiante
-      onClose(); // Cierra el modal si la creación fue exitosa
+      const isValid = await verifyToken(); // Verifica el token
+      if (!isValid) {
+        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+        window.location.href = '/iniciar-sesion';
+        return;
+      }
+
+      const response = await addEstudiante(estudiante); // Llama a la API para crear el estudiante
+
+      // Validar que la respuesta tiene el formato esperado
+      if (response) {
+        onCreateStudent(response); // Pasa los datos creados al callback
+        window.alert('Estudiante creado exitosamente.');
+        onClose(); // Cierra el modal
+      } else {
+        throw new Error('Respuesta inesperada de la API');
+      }
     } catch (err) {
-      setError('Hubo un problema al crear el estudiante.'); // Muestra un mensaje de error
-      console.error(err);
+      console.error('Error inesperado:', err);
+      setError('Ocurrió un error inesperado. Inténtelo nuevamente.');
+    } finally {
+      setIsCreating(false); // Desactiva la rueda de carga
     }
   };
 
@@ -101,8 +124,9 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              disabled={isCreating} // Desactiva el botón mientras se crea
             >
-              Crear Estudiante
+              {isCreating ? 'Creando...' : 'Crear Estudiante'}
             </button>
             <button
               type="button"

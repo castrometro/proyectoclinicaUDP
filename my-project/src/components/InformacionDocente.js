@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { User, Edit, Trash2,Mail, } from 'lucide-react';
+import { User, Edit,Mail, } from 'lucide-react';
 import { deleteDocente, updateDocente } from '../utils/docentesService'; // Asegúrate de implementar estos servicios
+import { verifyToken } from '../utils/authService';
+
 
 export default function InformacionDocente({ selectedDocente, onDocenteDeleted, onDocenteUpdated }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedDocente, setEditedDocente] = useState({ ...selectedDocente });
+  const [isDeleting, setIsDeleting] = useState(false); // Estado para eliminación
+  const [isSaving, setIsSaving] = useState(false); // Estado para guardar
+
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -15,34 +20,54 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
   };
 
   const handleSaveChanges = async () => {
-    const { password, ...dataSinContraseña } = editedDocente; // Excluye password del payload
+    setIsSaving(true); // Activa la rueda de carga
     try {
-      console.log(dataSinContraseña); // Antes de enviarlo al backend
-
+      const isValid = await verifyToken(); // Verifica el token
+      if (!isValid) {
+        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+        window.location.href = '/iniciar-sesion'; // Redirige
+        return;
+      }
+  
+      const { password, ...dataSinContraseña } = editedDocente; // Excluye la contraseña
       const updatedDocente = await updateDocente(editedDocente.id, dataSinContraseña);
-      alert("Docente actualizado correctamente.");
+      alert('Docente actualizado correctamente.');
       setIsEditing(false);
       onDocenteUpdated(updatedDocente);
     } catch (error) {
-      console.error("Error al actualizar docente:", error);
-      alert("Error al actualizar el docente.");
+      console.error('Error al actualizar docente:', error);
+      alert('Error al actualizar el docente.');
+    } finally {
+      setIsSaving(false); // Desactiva la rueda de carga
     }
   };
+  
   
   
 
   const handleDelete = async () => {
     if (window.confirm(`¿Está seguro de eliminar al docente ${selectedDocente.first_name} ${selectedDocente.last_name}?`)) {
+      setIsDeleting(true); // Activa la rueda de carga
       try {
+        const isValid = await verifyToken(); // Verifica el token
+        if (!isValid) {
+          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+          window.location.href = '/iniciar-sesion'; // Redirige
+          return;
+        }
+  
         await deleteDocente(selectedDocente.id);
-        alert("Docente eliminado correctamente.");
+        alert('Docente eliminado correctamente.');
         onDocenteDeleted();
       } catch (error) {
-        console.error("Error al eliminar docente:", error);
-        alert("Error al eliminar el docente.");
+        console.error('Error al eliminar docente:', error);
+        alert('Error al eliminar el docente.');
+      } finally {
+        setIsDeleting(false); // Desactiva la rueda de carga
       }
     }
   };
+  
 
   if (!selectedDocente) {
     return <p>Seleccione un docente para ver su información.</p>;
@@ -149,8 +174,32 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
             <button
               onClick={handleSaveChanges}
               className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              disabled={isSaving} // Desactiva el botón mientras guarda
             >
-              Guardar cambios
+              {isSaving ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              ) : (
+                'Guardar cambios'
+              )}
             </button>
             <button
               onClick={() => setIsEditing(false)}
@@ -167,12 +216,39 @@ export default function InformacionDocente({ selectedDocente, onDocenteDeleted, 
             >
               <Edit size={16} className="mr-2" /> Editar
             </button>
-            <button 
-              onClick={handleDelete} 
-              className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            <button
+              onClick={handleDelete}
+              className={`flex items-center px-4 py-2 rounded-md text-white ${
+                isDeleting ? 'bg-gray-500' : 'bg-red-500 hover:bg-red-600'
+              }`}
+              disabled={isDeleting} // Desactiva el botón mientras elimina
             >
-              <Trash2 size={16} className="mr-2" /> Eliminar
+              {isDeleting ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              ) : (
+                'Eliminar'
+              )}
             </button>
+
           </div>
         )}
       </div>

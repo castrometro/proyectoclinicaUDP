@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { addDocente } from '../utils/docentesService'; // Importar servicio de docentes
+import { verifyToken } from '../utils/authService';
 
 export default function CrearDocente({ onClose, onCreateDocente }) {
   const [docente, setDocente] = useState({
@@ -9,6 +11,7 @@ export default function CrearDocente({ onClose, onCreateDocente }) {
     password: '',
   });
   const [error, setError] = useState(null); // Estado para manejar errores
+  const [isCreating, setIsCreating] = useState(false); // Estado para manejar la carga
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,14 +20,35 @@ export default function CrearDocente({ onClose, onCreateDocente }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreating(true); // Activa la rueda de carga
+    setError(null); // Resetea el estado de error previo
+
     try {
-      await onCreateDocente(docente); // Llama a la función para crear el docente
-      onClose(); // Cierra el modal si la creación fue exitosa
+        const isValid = await verifyToken(); // Verifica el token antes de proceder
+        if (!isValid) {
+            window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+            window.location.href = '/iniciar-sesion';
+            return;
+        }
+
+        const response = await addDocente(docente); // Llama a la API para crear el docente
+
+        // Validar que la respuesta tiene el formato esperado
+        if (response) {
+            onCreateDocente(response); // Pasa los datos creados al callback
+            window.alert('Docente creado exitosamente.');
+            onClose(); // Cierra el modal
+        } else {
+            throw new Error('Respuesta inesperada de la API');
+        }
     } catch (err) {
-      setError('Hubo un problema al crear el docente.'); // Muestra un mensaje de error
-      console.error(err);
+        console.error('Error inesperado:', err);
+        setError('Ocurrió un error inesperado. Inténtelo nuevamente.');
+    } finally {
+        setIsCreating(false); // Desactiva la rueda de carga
     }
-  };
+};
+
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
@@ -101,8 +125,9 @@ export default function CrearDocente({ onClose, onCreateDocente }) {
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              disabled={isCreating} // Desactiva el botón mientras se crea
             >
-              Crear Docente
+              {isCreating ? 'Creando...' : 'Crear Docente'}
             </button>
             <button
               type="button"
@@ -117,4 +142,3 @@ export default function CrearDocente({ onClose, onCreateDocente }) {
     </div>
   );
 }
-

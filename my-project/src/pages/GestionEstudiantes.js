@@ -6,7 +6,7 @@ import CrearEstudianteButton from '../components/CrearEstudianteButton';
 import BuscadorEstudiante from '../components/BuscadorEstudiante';
 import InformacionEstudiante from '../components/InformacionEstudiante';
 import CrearEstudiante from '../components/CrearEstudiante';
-import { getEstudiantes, addEstudiante } from '../utils/estudiantesService';
+import { getEstudiantes } from '../utils/estudiantesService';
 
 export default function GestionEstudiantes() {
   const [estudiantes, setEstudiantes] = useState([]);
@@ -59,16 +59,8 @@ export default function GestionEstudiantes() {
   };
 
   const handleCreateStudent = async (newStudent) => {
-    try {
-      const createdStudent = await addEstudiante(newStudent);
-      if (createdStudent) {
-        setEstudiantes((prevEstudiantes) => [...prevEstudiantes, createdStudent]);
-        setSelectedStudent(null);
-      }
-      setShowCrearEstudiante(false);
-    } catch (error) {
-      console.error("Error al crear estudiante:", error);
-    }
+    setEstudiantes([...estudiantes, newStudent]);
+    setShowCrearEstudiante(false);
   };
 
   const handleStudentDeletion = (id) => {

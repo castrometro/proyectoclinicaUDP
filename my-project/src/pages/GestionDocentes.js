@@ -6,7 +6,7 @@ import CrearDocenteButton from '../components/CrearDocenteButton'; // Crear un b
 import BuscadorDocente from '../components/BuscadorDocente'; // Similar al buscador de pacientes
 import InformacionDocente from '../components/InformacionDocente'; // Componente que muestra información del docente
 import CrearDocente from '../components/CrearDocente'; // Modal para crear docentes
-import { getDocentes, addDocente } from '../utils/docentesService'; // Servicios específicos para docentes
+import { getDocentes} from '../utils/docentesService'; // Servicios específicos para docentes
 
 export default function GestionDocentes() {
   const [docentes, setDocentes] = useState([]);
@@ -59,11 +59,7 @@ export default function GestionDocentes() {
   };
 
   const handleCreateDocente = async (newDocente) => {
-    const createdDocente = await addDocente(newDocente);
-    if (createdDocente) {
-      setDocentes(prevDocentes => [...prevDocentes, createdDocente]);
-      setSelectedDocente(null);
-    }
+    setDocentes([...docentes, newDocente]);
     setShowCrearDocente(false);
     window.location.reload();
   };

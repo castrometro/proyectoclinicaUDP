@@ -1,77 +1,71 @@
 import React, { useState } from 'react';
 import { User, Edit, Trash2, Mail } from 'lucide-react';
-import { deleteEstudiante, updateEstudiante } from '../utils/estudiantesService'; // Servicios específicos para estudiantes
-import { verifyToken } from '../utils/authService'; // Verificación de token
+import { deleteDocente, updateDocente } from '../utils/docentesService';
+import { verifyToken } from '../utils/authService'; // Importa la función de verificación de token
 
-export default function InformacionEstudiante({ selectedStudent, onStudentDeleted, onStudentUpdated }) {
+export default function InformacionDocente({ selectedDocente, onDocenteDeleted, onDocenteUpdated }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedStudent, setEditedStudent] = useState({ ...selectedStudent });
-  const [isSaving, setIsSaving] = useState(false); // Estado para guardar cambios
-  const [isDeleting, setIsDeleting] = useState(false); // Estado para eliminar estudiante
+  const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga
+  const [editedDocente, setEditedDocente] = useState({ ...selectedDocente });
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditedStudent((prev) => ({
+    setEditedDocente((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleSaveChanges = async () => {
-    setIsSaving(true); // Activa la rueda de carga
-    try {
-      const isValid = await verifyToken(); // Verifica el token
-      if (!isValid) {
-        window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-        window.location.href = '/iniciar-sesion';
-        return;
-      }
+    setIsLoading(true); // Inicia la carga
+    if (!(await verifyToken())) {
+      setIsLoading(false); // Finaliza la carga si el token es inválido
+      return;
+    }
 
-      const { password, ...dataSinContraseña } = editedStudent; // Excluye password del payload
-      const updatedStudent = await updateEstudiante(editedStudent.id, dataSinContraseña);
-      alert('Estudiante actualizado correctamente.');
+    const { password, ...dataSinContraseña } = editedDocente; // Excluye password del payload
+    try {
+      const updatedDocente = await updateDocente(editedDocente.id, dataSinContraseña);
+      alert("Docente actualizado correctamente.");
       setIsEditing(false);
-      onStudentUpdated(updatedStudent);
+      onDocenteUpdated(updatedDocente);
     } catch (error) {
-      console.error('Error al actualizar estudiante:', error);
-      alert('Error al actualizar el estudiante.');
+      console.error("Error al actualizar docente:", error);
+      alert("Error al actualizar el docente.");
     } finally {
-      setIsSaving(false); // Desactiva la rueda de carga
+      setIsLoading(false); // Finaliza la carga
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`¿Está seguro de eliminar al estudiante ${selectedStudent.first_name} ${selectedStudent.last_name}?`)) {
-      setIsDeleting(true); // Activa la rueda de carga
-      try {
-        const isValid = await verifyToken(); // Verifica el token
-        if (!isValid) {
-          window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
-          window.location.href = '/iniciar-sesion';
-          return;
-        }
+    if (window.confirm(`¿Está seguro de eliminar al docente ${selectedDocente.first_name} ${selectedDocente.last_name}?`)) {
+      setIsLoading(true); // Inicia la carga
+      if (!(await verifyToken())) {
+        setIsLoading(false); // Finaliza la carga si el token es inválido
+        return;
+      }
 
-        await deleteEstudiante(selectedStudent.id);
-        alert('Estudiante eliminado correctamente.');
-        onStudentDeleted();
+      try {
+        await deleteDocente(selectedDocente.id);
+        alert("Docente eliminado correctamente.");
+        onDocenteDeleted();
       } catch (error) {
-        console.error('Error al eliminar estudiante:', error);
-        alert('Error al eliminar el estudiante.');
+        console.error("Error al eliminar docente:", error);
+        alert("Error al eliminar el docente.");
       } finally {
-        setIsDeleting(false); // Desactiva la rueda de carga
+        setIsLoading(false); // Finaliza la carga
       }
     }
   };
 
-  if (!selectedStudent) {
-    return <p>Seleccione un estudiante para ver su información.</p>;
+  if (!selectedDocente) {
+    return <p>Seleccione un docente para ver su información.</p>;
   }
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Información del Estudiante</h2>
+      <h2 className="text-xl font-semibold mb-4">Información del Docente</h2>
       <div className="space-y-2">
-        {/* Nombre y correo */}
         <p className="flex items-center">
           <User size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Nombre:</span>
@@ -79,15 +73,14 @@ export default function InformacionEstudiante({ selectedStudent, onStudentDelete
             <input
               type="text"
               name="first_name"
-              value={editedStudent.first_name}
+              value={editedDocente.first_name}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedStudent.first_name
+            selectedDocente.first_name
           )}
         </p>
-
         <p className="flex items-center">
           <User size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Apellido:</span>
@@ -95,31 +88,29 @@ export default function InformacionEstudiante({ selectedStudent, onStudentDelete
             <input
               type="text"
               name="last_name"
-              value={editedStudent.last_name}
+              value={editedDocente.last_name}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedStudent.last_name
+            selectedDocente.last_name
           )}
         </p>
-
         <p className="flex items-center">
           <Mail size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Correo:</span>
           {isEditing ? (
             <input
               type="email"
-              name="email"
-              value={editedStudent.email}
+              name="correo"
+              value={editedDocente.email}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedStudent.email
+            selectedDocente.email
           )}
         </p>
-
         <p className="flex items-center">
           <User size={16} className="mr-2 text-gray-500" />
           <span className="font-semibold mr-2">Usuario:</span>
@@ -127,26 +118,27 @@ export default function InformacionEstudiante({ selectedStudent, onStudentDelete
             <input
               type="text"
               name="username"
-              value={editedStudent.username}
+              value={editedDocente.username}
               onChange={handleEditChange}
               className="border border-gray-300 rounded-md p-1"
             />
           ) : (
-            selectedStudent.username
+            selectedDocente.username
           )}
         </p>
+
+        {/* Repetir estructura para otros campos */}
       </div>
 
-      {/* Botones de acción */}
       <div className="mt-4 space-x-4">
         {isEditing ? (
           <>
             <button
               onClick={handleSaveChanges}
               className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              disabled={isSaving} // Desactiva el botón mientras guarda
+              disabled={isLoading} // Desactiva el botón mientras carga
             >
-              {isSaving ? 'Guardando...' : 'Guardar cambios'}
+              {isLoading ? "Guardando..." : "Guardar cambios"}
             </button>
             <button
               onClick={() => setIsEditing(false)}
@@ -165,12 +157,10 @@ export default function InformacionEstudiante({ selectedStudent, onStudentDelete
             </button>
             <button
               onClick={handleDelete}
-              className={`flex items-center px-4 py-2 rounded-md text-white ${
-                isDeleting ? 'bg-gray-500' : 'bg-red-500 hover:bg-red-600'
-              }`}
-              disabled={isDeleting} // Desactiva el botón mientras elimina
+              className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              disabled={isLoading} // Desactiva el botón mientras carga
             >
-              {isDeleting ? 'Eliminando...' : (
+              {isLoading ? "Eliminando..." : (
                 <>
                   <Trash2 size={16} className="mr-2" /> Eliminar
                 </>
