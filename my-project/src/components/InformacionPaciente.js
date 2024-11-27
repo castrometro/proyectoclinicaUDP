@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+// InformacionPaciente.js
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, User, Edit, Trash2, Calendar, Mail, Phone, CreditCard } from 'lucide-react';
 import { deletePaciente, updatePaciente } from '../utils/pacientesService';
 import { verifyToken } from '../utils/authService';
 import { processRut } from '../utils/rutUtils';
-
 
 const userRole = localStorage.getItem('userRole');
 
@@ -13,6 +13,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
   const [isDeleting, setIsDeleting] = useState(false); // Control de carga en "Eliminar"
   const [isSaving, setIsSaving] = useState(false); // Control de carga en "Guardar Cambios"
   const [editForm, setEditForm] = useState({ ...selectedPatient });
+  const [errorMessage, setErrorMessage] = useState(''); // Mensaje de error
 
   // Actualiza la edad automáticamente al cambiar la fecha de nacimiento
   const calculateAge = (fecha_nacimiento) => {
@@ -29,8 +30,13 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
     return '';
   };
 
+  // Actualiza el formulario de edición cuando el paciente seleccionado cambia
+  useEffect(() => {
+    setEditForm({ ...selectedPatient });
+  }, [selectedPatient]);
+
   const handleDelete = async () => {
-    if (window.confirm(`¿Estás seguro de que deseas eliminar a ${selectedPatient.nombre}?`)) {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar a ${selectedPatient.nombre} ${selectedPatient.apellido}?`)) {
       setIsDeleting(true); // Activa la rueda de carga
 
       try {
@@ -60,7 +66,8 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-  
+    setErrorMessage(''); // Limpia mensajes de error anteriores
+
     try {
       const isValid = await verifyToken();
       if (!isValid) {
@@ -68,17 +75,17 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
         window.location.href = '/iniciar-sesion';
         return;
       }
-  
-      // Validar el RUT con el formato actual
+
+      // Validar el RUT completo antes de enviar
       try {
-        const formattedRut = processRut(editForm.rut); // Valida y formatea el RUT con guion
-        editForm.rut = formattedRut; // Actualiza el RUT en el formulario
+        const formattedRut = processRut(editForm.rut); // Valida y formatea el RUT
+        setEditForm((prev) => ({ ...prev, rut: formattedRut })); // Actualiza el estado con el RUT formateado
       } catch (error) {
-        alert(error.message); // Notifica si el RUT es inválido
+        setErrorMessage(error.message); // Muestra el error si el RUT no es válido
         setIsSaving(false);
         return; // Detiene el flujo si el RUT no es válido
       }
-  
+
       // Enviar los datos al backend para actualizar
       const updatedPatient = await updatePaciente(selectedPatient.rut, editForm);
       if (updatedPatient) {
@@ -86,30 +93,40 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
         window.alert('Paciente actualizado exitosamente.');
         onPatientUpdated();
       } else {
-        alert('No se pudo actualizar el paciente.');
+        setErrorMessage('No se pudo actualizar el paciente.');
       }
     } catch (error) {
       console.error('Error al actualizar paciente:', error);
-      alert('Hubo un problema al actualizar el paciente.');
+      setErrorMessage('Hubo un problema al actualizar el paciente.');
     } finally {
       setIsSaving(false);
     }
   };
-  
-
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === 'rut') {
-      // Permitir solo números, puntos y guiones
-      const allowedCharacters = /^[0-9.-]*$/;
+      // Permitir solo números, K/k y un guión
+      const allowedCharacters = /^[0-9Kk-]*$/;
       if (allowedCharacters.test(value)) {
-        setEditForm((prev) => ({
-          ...prev,
-          [name]: value, // Actualiza el RUT mientras el usuario escribe
-        }));
+        // Limitar a un solo guión y asegurarse de que esté antes del último carácter
+        const rutParts = value.split('-');
+        if (rutParts.length <= 2) {
+          let formattedRut = value.toUpperCase();
+
+          // Insertar guión automáticamente si el usuario ingresa el penúltimo dígito
+          if (rutParts.length === 1 && formattedRut.length > 1) {
+            const lastChar = formattedRut.slice(-1);
+            const body = formattedRut.slice(0, -1);
+            formattedRut = `${body}-${lastChar}`;
+          }
+
+          setEditForm((prev) => ({
+            ...prev,
+            [name]: formattedRut,
+          }));
+        }
       }
     } else {
       // Manejo de otros campos, como fecha de nacimiento
@@ -120,7 +137,6 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
       }));
     }
   };
-  
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -128,7 +144,9 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
       {selectedPatient ? (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <p className="text-lg font-medium">{selectedPatient.nombre} {selectedPatient.apellido}</p>
+            <p className="text-lg font-medium">
+              {selectedPatient.nombre} {selectedPatient.apellido}
+            </p>
             <Link
               to={`/ficha-paciente/${selectedPatient.rut}`}
               className="text-blue-500 hover:text-blue-600 flex items-center"
@@ -140,6 +158,11 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
 
           {isEditing ? (
             <form onSubmit={handleEditSubmit}>
+              {errorMessage && (
+                <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                  {errorMessage}
+                </div>
+              )}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
                   Nombre
@@ -180,18 +203,20 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 />
               </div>
               <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rut">
-                RUT u otro documento
-              </label>
-              <input
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rut">
+                  RUT sin puntos, con guión y dígito verificador
+                </label>
+                <input
                   type="text"
-                  name="rut" // Asegúrate de que el nombre coincida con la clave en el estado editForm
+                  name="rut"
                   value={editForm.rut}
                   onChange={handleChange}
+                  maxLength={12} // Limita la longitud para evitar exceso de caracteres
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
+                  placeholder="12345678-5" // Ejemplo de formato
                 />
-            </div>
+              </div>
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
@@ -308,4 +333,3 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
     </div>
   );
 }
-

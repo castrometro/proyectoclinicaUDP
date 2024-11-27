@@ -35,14 +35,29 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === 'rut') {
-      const allowedCharacters = /^[0-9.-]*$/; // Permitir solo números, puntos y guiones
+      // Permitir solo números, K/k y un guión
+      const allowedCharacters = /^[0-9Kk-]*$/;
       if (allowedCharacters.test(value)) {
-        setPaciente((prev) => ({
-          ...prev,
-          [name]: value, // Permite el formato ingresado
-        }));
+        // Limitar a un solo guión y asegurarse de que esté antes del último carácter
+        const rutParts = value.split('-');
+        if (rutParts.length <= 2) {
+          let formattedRut = value.toUpperCase();
+
+          // Insertar guión automáticamente si el usuario ingresa el penúltimo dígito
+          if (rutParts.length === 1 && formattedRut.length > 1) {
+            // Evitar múltiples guiones
+            const lastChar = formattedRut.slice(-1);
+            const body = formattedRut.slice(0, -1);
+            formattedRut = `${body}-${lastChar}`;
+          }
+
+          setPaciente((prev) => ({
+            ...prev,
+            [name]: formattedRut,
+          }));
+        }
       }
     } else {
       setPaciente((prev) => ({
@@ -52,16 +67,12 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
       }));
     }
   };
-  
-  
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     setErrorMessage(''); // Limpia mensajes de error anteriores
-  
+
     try {
       const isValid = await verifyToken(); // Verifica el token antes de proceder
       if (!isValid) {
@@ -69,7 +80,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
         window.location.href = '/iniciar-sesion';
         return;
       }
-  
+
       // Validar y formatear el RUT
       try {
         const formattedRut = processRut(paciente.rut); // Valida y formatea el RUT
@@ -79,12 +90,12 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
         setIsSaving(false);
         return;
       }
-  
+
       const pacienteData = { ...paciente };
       delete pacienteData.edad; // Elimina el campo calculado antes de enviar
-  
+
       const response = await addPaciente(pacienteData);
-  
+
       if (response.success) {
         onCreatePatient(response.data);
         window.alert('Paciente creado exitosamente.');
@@ -99,18 +110,15 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
       setIsSaving(false);
     }
   };
-  
-  
-  
-  
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <h2 className="text-2xl font-bold mb-4">Crear Paciente</h2>
         {errorMessage && (
-            <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {errorMessage}
-            </div>
+          <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {errorMessage}
+          </div>
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -148,8 +156,10 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
               name="rut"
               value={paciente.rut}
               onChange={handleChange}
+              maxLength={12} // Limita la longitud para evitar exceso de caracteres
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
+              placeholder="12345678-5" // Ejemplo de formato
             />
           </div>
           <div className="mb-4">
@@ -165,7 +175,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
               required
             />
           </div>
-          <div className="mb-4">  
+          <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edad">
               Edad
             </label>
