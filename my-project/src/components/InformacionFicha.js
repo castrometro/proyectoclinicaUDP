@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { getFichaById, deleteFichaById, updateFichaById } from '../utils/fichasService';
 import { verifyToken } from '../utils/authService'; // Agrega la función de verificación de token
 
-
 export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate }) {
   const [ficha, setFicha] = useState(null);
   const [editableFicha, setEditableFicha] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({}); // Nuevo estado para errores de campo
   const userRole = localStorage.getItem('userRole');
 
   useEffect(() => {
@@ -44,9 +44,9 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+    setError(null);
+    setFieldErrors({});
   };
-
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,11 +54,53 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
       ...prevState,
       [name]: value,
     }));
+    
+    // Limpiar el error del campo si está siendo editado
+    if (fieldErrors[name]) {
+      setFieldErrors(prevErrors => {
+        const { [name]: removed, ...rest } = prevErrors;
+        return rest;
+      });
+    }
   };
 
   const handleSave = async () => {
     setIsProcessing(true);
     setError(null);
+
+    // Definir los campos requeridos
+    const requiredFields = [
+      "factores",
+      "anamnesis",
+      "motivo_consulta",
+      "rau_necesidades",
+      "examen_fisico",
+      "instrumentos_aplicados",
+      "diagnostico",
+      "intervenciones",
+    ];
+
+    // Verificar que todos los campos requeridos estén llenos
+    const emptyFields = requiredFields.filter(
+      (field) => !editableFicha[field] || editableFicha[field].trim() === ""
+    );
+
+    if (emptyFields.length > 0) {
+      const newFieldErrors = {};
+      emptyFields.forEach((field) => {
+        newFieldErrors[field] = "Este campo es obligatorio.";
+      });
+      setFieldErrors(newFieldErrors);
+      setError(
+        `Por favor, complete todos los campos requeridos: ${emptyFields
+          .map((field) => field.replace('_', ' ').toUpperCase())
+          .join(", ")}.`
+      );
+      setIsProcessing(false);
+      return;
+    } else {
+      setFieldErrors({});
+    }
 
     try {
       const isValid = await verifyToken();
@@ -80,6 +122,7 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
       setIsProcessing(false);
     }
   };
+
   const handleDelete = async () => {
     if (!window.confirm('¿Estás seguro de eliminar esta ficha?')) return;
 
@@ -108,6 +151,8 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
   const handleDiscard = () => {
     setEditableFicha(ficha);
     setIsEditing(false);
+    setError(null);
+    setFieldErrors({});
   };
 
   const formatDateTime = (dateTime) => {
@@ -142,78 +187,96 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
         </button>
       </div>
 
-      {error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : (
-        <div className="space-y-6">
-          <div className="mb-6">
-            <p><strong>Creado por:</strong> {ficha?.creado_por_username || "Desconocido"}</p>
-            <p><strong>Fecha:</strong> {created.date}</p>
-            <p><strong>Hora:</strong> {created.time}</p>
+      {error && (
+        <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
 
-            <p className="mt-4"><strong>Modificado por:</strong> {ficha?.modificado_por_username || "Desconocido"}</p>
-            <p><strong>Fecha:</strong> {modified.date}</p>
-            <p><strong>Hora:</strong> {modified.time}</p>
-          </div>
+      <div className="space-y-6">
+        <div className="mb-6">
+          <p><strong>Creado por:</strong> {ficha?.creado_por_username || "Desconocido"}</p>
+          <p><strong>Fecha:</strong> {created.date}</p>
+          <p><strong>Hora:</strong> {created.time}</p>
 
-          {/* Categoría Valoración */}
-          <h3 className="text-lg font-semibold mt-4">Categoría Valoración</h3>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Factores", name: "factores" },
-              { label: "Anamnesis", name: "anamnesis" },
-              { label: "Motivo Consulta", name: "motivo_consulta" },
-              { label: "RAU Necesidades", name: "rau_necesidades" },
-              { label: "Examen Físico", name: "examen_fisico" },
-              { label: "Instrumentos Aplicados", name: "instrumentos_aplicados" },
-            ].map((field, index) => (
-              <div key={index} className="col-span-1">
-                <label className="font-semibold block mb-1">{field.label}</label>
-                <textarea
-                  name={field.name}
-                  value={editableFicha ? editableFicha[field.name] : ""}
-                  onChange={handleInputChange}
-                  readOnly={!isEditing}
-                  className={`w-full border rounded-md p-2 bg-gray-100 ${isEditing ? 'bg-white' : ''} resize-none`}
-                  rows={3} // Ajusta para que las cajas se expandan verticalmente si el contenido crece
-                />
-              </div>
-            ))}
-          </div>
+          <p className="mt-4"><strong>Modificado por:</strong> {ficha?.modificado_por_username || "Desconocido"}</p>
+          <p><strong>Fecha:</strong> {modified.date}</p>
+          <p><strong>Hora:</strong> {modified.time}</p>
+        </div>
 
-          {/* Categoría Diagnóstico */}
-          <h3 className="text-lg font-semibold mt-4">Categoría Diagnóstico</h3>
-          <div className="w-full">
-            <label className="font-semibold block mb-1">Diagnóstico</label>
-            <textarea
-              name="diagnostico"
-              value={editableFicha ? editableFicha.diagnostico : ""}
-              onChange={handleInputChange}
-              readOnly={!isEditing}
-              className={`w-full border rounded-md p-2 bg-gray-100 ${isEditing ? 'bg-white' : ''} resize-none`}
-              rows={3}
-            />
-          </div>
+        {/* Categoría Valoración */}
+        <h3 className="text-lg font-semibold mt-4">Categoría Valoración</h3>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { label: "Factores", name: "factores" },
+            { label: "Anamnesis", name: "anamnesis" },
+            { label: "Motivo Consulta", name: "motivo_consulta" },
+            { label: "RAU Necesidades", name: "rau_necesidades" },
+            { label: "Examen Físico", name: "examen_fisico" },
+            { label: "Instrumentos Aplicados", name: "instrumentos_aplicados" },
+          ].map((field, index) => (
+            <div key={index} className="col-span-1">
+              <label className="font-semibold block mb-1">{field.label}</label>
+              <textarea
+                name={field.name}
+                value={editableFicha ? editableFicha[field.name] : ""}
+                onChange={handleInputChange}
+                readOnly={!isEditing}
+                className={`w-full border rounded-md p-2 ${
+                  fieldErrors[field.name] ? 'border-red-500 bg-red-50' : 'bg-gray-100'
+                } ${isEditing ? 'bg-white' : ''} resize-none`}
+                rows={3} // Ajusta para que las cajas se expandan verticalmente si el contenido crece
+              />
+              {fieldErrors[field.name] && (
+                <p className="text-red-500 text-sm mt-1">{fieldErrors[field.name]}</p>
+              )}
+            </div>
+          ))}
+        </div>
 
-          {/* Categoría Intervenciones */}
-          <h3 className="text-lg font-semibold mt-4">Categoría Intervenciones</h3>
-          <div className="w-full">
-            <label className="font-semibold block mb-1">Intervenciones</label>
-            <textarea
-              name="intervenciones"
-              value={editableFicha ? editableFicha.intervenciones : ""}
-              onChange={handleInputChange}
-              readOnly={!isEditing}
-              className={`w-full border rounded-md p-2 bg-gray-100 ${isEditing ? 'bg-white' : ''} resize-none`}
-              rows={3}
-            />
-          </div>
+        {/* Categoría Diagnóstico */}
+        <h3 className="text-lg font-semibold mt-4">Categoría Diagnóstico</h3>
+        <div className="w-full">
+          <label className="font-semibold block mb-1">Diagnóstico</label>
+          <textarea
+            name="diagnostico"
+            value={editableFicha ? editableFicha.diagnostico : ""}
+            onChange={handleInputChange}
+            readOnly={!isEditing}
+            className={`w-full border rounded-md p-2 ${
+              fieldErrors["diagnostico"] ? 'border-red-500 bg-red-50' : 'bg-gray-100'
+            } ${isEditing ? 'bg-white' : ''} resize-none`}
+            rows={3}
+          />
+          {fieldErrors["diagnostico"] && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors["diagnostico"]}</p>
+          )}
+        </div>
 
-          {(userRole === 'Administrador' || userRole === 'Docente') && (
-            <div className="flex justify-between mt-6">
-              {isEditing ? (
-                <>
-                  <button
+        {/* Categoría Intervenciones */}
+        <h3 className="text-lg font-semibold mt-4">Categoría Intervenciones</h3>
+        <div className="w-full">
+          <label className="font-semibold block mb-1">Intervenciones</label>
+          <textarea
+            name="intervenciones"
+            value={editableFicha ? editableFicha.intervenciones : ""}
+            onChange={handleInputChange}
+            readOnly={!isEditing}
+            className={`w-full border rounded-md p-2 ${
+              fieldErrors["intervenciones"] ? 'border-red-500 bg-red-50' : 'bg-gray-100'
+            } ${isEditing ? 'bg-white' : ''} resize-none`}
+            rows={3}
+          />
+          {fieldErrors["intervenciones"] && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors["intervenciones"]}</p>
+          )}
+        </div>
+
+        {(userRole === 'Administrador' || userRole === 'Docente') && (
+          <div className="flex justify-between mt-6">
+            {isEditing ? (
+              <>
+                <button
                   onClick={handleSave}
                   disabled={isProcessing}
                   className={`bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 ${
@@ -229,15 +292,15 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
                 >
                   Descartar
                 </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleEditToggle}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                  Editar
-                </button>
-              )}
+              </>
+            ) : (
               <button
+                onClick={handleEditToggle}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                Editar
+              </button>
+            )}
+            <button
               onClick={handleDelete}
               disabled={isProcessing}
               className={`bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 ${
@@ -246,10 +309,9 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
             >
               {isProcessing ? 'Eliminando...' : 'Eliminar'}
             </button>
-            </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
