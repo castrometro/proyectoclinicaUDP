@@ -29,6 +29,7 @@ export const verifyToken = async () => {
   const token = localStorage.getItem('token');
   if (!token) {
     window.alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+    localStorage.removeItem('token');
     window.location.href = '/iniciar-sesion'; // Redirige directamente
     return false;
   }

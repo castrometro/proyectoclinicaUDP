@@ -1,4 +1,3 @@
-// IniciarSesion.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -25,12 +24,25 @@ export default function IniciarSesion() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header {...headerProps} />
-      <main className="flex-grow relative">
-        <img src="/images/FacsyoGris.png" alt="Facultad de Salud y Odontología UDP" className="w-full h-full object-cover filter grayscale" />
+      <main className="flex-grow relative h-[500px] overflow-hidden">
+        {/* Imagen de fondo ajustada */}
+        <img 
+          src="/images/FacsyoGris.png" 
+          alt="Facultad de Salud y Odontología UDP" 
+          className="w-full h-full object-cover filter grayscale"
+          style={{ objectPosition: "50% 30%" }} // Muestra la parte superior de la imagen
+        />
+        {/* Contenedor del formulario */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <img src="/images/FacsyoLogo.png" alt="UDP Logo" className="h-12 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-center mb-6">Iniciar sesión</h2>
+          <div className="bg-gray-300 p-10 rounded-3xl shadow-lg w-full max-w-sm flex flex-col items-center">
+            <img 
+              src="/images/FacsyoLogo.png" 
+              alt="UDP Logo" 
+              className="h-12 mb-4"
+            />
+            <h2 className="font-arizona font-medium text-2xl text-center mb-6">
+              Iniciar sesión
+            </h2>
             <Login onSuccess={handleSuccess} />
           </div>
         </div>

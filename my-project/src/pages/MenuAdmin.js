@@ -7,14 +7,14 @@ import { getMenuOptions } from '../utils/menuService';
 import { verifyToken } from '../utils/authService';
 
 const AdminCard = ({ title, link }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
-    <h2 className="text-xl font-semibold mb-4">{title}</h2>
+  <div className="bg-white rounded-lg shadow-md p-12 flex flex-col justify-between border border-black">
+    <h2 className="font-regular font-medium text-2xl mb-4 ">{title}</h2>
     <a 
       href={link} 
-      className="text-blue-600 hover:text-blue-800 flex items-center justify-end"
+      className="text-black-600 hover:text-blue-800 flex items-center justify-end"
     >
       acceso
-      <ChevronRight className="ml-1 h-5 w-5" />
+      <ChevronRight className="ml-1 h-5 w-5 text-aqua" />
     </a>
   </div>
 );
@@ -55,6 +55,9 @@ export default function MenuAdmin() {
             window.alert('Hubo un problema al obtener las opciones de menú.');
           }
         }
+        else {
+          localStorage.removeItem('token');
+        }
       }
       setIsLoading(false); // Finaliza la carga
     };
@@ -74,22 +77,23 @@ export default function MenuAdmin() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col ">
       <Header {...headerProps} />
       <main className="flex-grow relative">
         <div className="relative">
           <img
             src="/images/PanelAdmin.png"
             alt="Panel de Administración"
-            className="w-full h-96 object-cover"
+            className="w-full h-[500px] object-cover"
           />
-          <div className="absolute inset-0 flex items-center h-96">
-            <h1 className="font-arizona font-bold text-4xl mb-4 md:mb-0 md:w-1/3 ml-40">
+          <div className="absolute inset-0 flex items-center h-[500px]">
+            <h1 className="font-arizona font-bold text-6xl mb-4 md:mb-0 md:w-1/3 ml-40">
               Panel de<br />administracion
             </h1>
           </div>
         </div>
-        <div className="container mx-auto px-4 py-8">
+
+        <div className="container mx-auto px-4 py-20">
           {isLoading ? (
             <div className="flex justify-center items-center h-40">
               <svg

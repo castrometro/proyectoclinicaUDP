@@ -88,7 +88,7 @@ DATABASES = {
         "NAME": "clinicaUDP",
         "USER": "postgres",
         "PASSWORD": "HgE#3q!ZsNb*Tmu",
-        "HOST": "54.163.210.71",
+        "HOST": "44.220.155.104",
         "PORT": "5432",
     }
     # "default": {

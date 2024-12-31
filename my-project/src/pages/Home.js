@@ -7,17 +7,17 @@ import Card from '../components/Card';
 const cards = [
   {
     title: "Sobre el Proyecto",
-    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
+    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim",
     link: "/sobre-el-proyecto"
   },
   {
     title: "Seguridad de la información",
-    text: "La ciberseguridad, también conocida como seguridad digital, es la práctica de proteger su información digital, dispositivos y activos. Esto incluye información personal, cuentas, archivos, fotos e incluso el dinero.",
+    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim",
     link: "/seguridad-informacion"
   },
   {
     title: "Ayuda",
-    text: "Pasos para RCP: 1. Verificar la conciencia del paciente. 2. Llamar a emergencias. 3. Comprimir el pecho. 4. Usar un desfibrilador.",
+    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim",
     link: "/ayuda"
   }
 ];
@@ -40,23 +40,6 @@ export default function Home() {
     ref.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleImagePosition = (direction) => {
-    setImagePosition((prev) => {
-      const step = 10;
-      switch (direction) {
-        case 'up':
-          return { ...prev, y: Math.max(0, prev.y - step) };
-        case 'down':
-          return { ...prev, y: Math.min(100, prev.y + step) };
-        case 'left':
-          return { ...prev, x: Math.max(0, prev.x - step) };
-        case 'right':
-          return { ...prev, x: Math.min(100, prev.x + step) };
-        default:
-          return prev;
-      }
-    });
-  };
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
@@ -82,19 +65,19 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header {...headerProps} />
       <main className="flex-grow">
-        <div className="relative w-full h-[400px]">
+        <div className="relative w-full h-[500px]">
           <img
             src="/images/Facsyo.jpeg"
             alt="Facsyo"
             className="w-full h-full object-cover"
-            style={{ objectPosition: `${imagePosition.x}% ${imagePosition.y}%` }}
+            style={{ objectPosition: "30% 20%" }}
           />
-          <div className="absolute top-2 right-2 bg-white bg-opacity-50 p-2 rounded">
+          {/* <div className="absolute top-2 right-2 bg-white bg-opacity-50 p-2 rounded">
             <button onClick={() => handleImagePosition('up')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">↑</button>
             <button onClick={() => handleImagePosition('down')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">↓</button>
             <button onClick={() => handleImagePosition('left')} className="px-2 py-1 bg-blue-500 text-white rounded mr-1">←</button>
             <button onClick={() => handleImagePosition('right')} className="px-2 py-1 bg-blue-500 text-white rounded">→</button>
-          </div>
+          </div> */}
         </div>
         <div ref={proyectoRef}>
           <Card {...cards[0]} />

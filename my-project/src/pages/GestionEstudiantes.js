@@ -7,12 +7,14 @@ import BuscadorEstudiante from '../components/BuscadorEstudiante';
 import InformacionEstudiante from '../components/InformacionEstudiante';
 import CrearEstudiante from '../components/CrearEstudiante';
 import { getEstudiantes } from '../utils/estudiantesService';
+import { verifyToken } from '../utils/authService';
 
 export default function GestionEstudiantes() {
   const [estudiantes, setEstudiantes] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showCrearEstudiante, setShowCrearEstudiante] = useState(false);
   const [notification, setNotification] = useState(null); // Para notificaciones de sesión expirada
+  const [hasVerified, setHasVerified] = useState(false); // Nueva bandera para controlar la ejecución única
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -24,22 +26,23 @@ export default function GestionEstudiantes() {
   useEffect(() => {
     const fetchEstudiantes = async () => {
       try {
+        // Verifica la sesión usando verifyToken
+        const isValid = await verifyToken(navigate);
+  
+        // Si el token no es válido, verifyToken ya manejará el redireccionamiento
+        if (!isValid) return;
+  
+        // Si la sesión es válida, procede a obtener los estudiantes
         const data = await getEstudiantes();
         setEstudiantes(Array.isArray(data) ? data : []);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error("Token expirado.");
-          setNotification('Tu sesión ha expirado. Serás redirigido al inicio de sesión en breve.');
-          setTimeout(() => {
-            handleLogout();
-          }, 5000); // Redirige después de 5 segundos
-        } else {
-          console.error("Error al cargar estudiantes:", error);
-        }
+        console.error("Error al cargar estudiantes:", error);
+        // Si ocurre un error inesperado, puedes manejarlo aquí (opcional)
       }
     };
+  
     fetchEstudiantes();
-  }, [handleLogout]);
+  }, [navigate]);
 
   const headerProps = {
     logoSrc: "/images/FacsyoLogo.png",
