@@ -121,7 +121,7 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Nueva Ficha</h2>
+        <h2 className="text-2xl font-worksans font-semibold">Nueva Ficha</h2>
         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
           Cerrar
         </button>
@@ -135,7 +135,7 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Categoría Valoración */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Valoración</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Categoría Valoración</h3>
         <div className="grid grid-cols-2 gap-4">
           {[
             { label: "Factores", name: "factores" },
@@ -146,7 +146,7 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
             { label: "Instrumentos Aplicados", name: "instrumentos_aplicados" },
           ].map((field, index) => (
             <div key={index}>
-              <label className="font-semibold block mb-1" htmlFor={field.name}>
+              <label className="text-lg font-worksans font-semibold block mb-1 " htmlFor={field.name}>
                 {field.label}
               </label>
               <textarea
@@ -168,7 +168,7 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
         </div>
 
         {/* Categoría Diagnóstico */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Diagnóstico</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Categoría Diagnóstico</h3>
         <div>
           <label className="font-semibold block mb-1" htmlFor="diagnostico">
             Diagnóstico
@@ -190,7 +190,7 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
         </div>
 
         {/* Categoría Intervenciones */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Intervenciones</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Categoría Intervenciones</h3>
         <div>
           <label className="font-semibold block mb-1" htmlFor="intervenciones">
             Intervenciones
@@ -216,14 +216,14 @@ export default function CrearFicha({ rut, onClose, onCreateFicha }) {
           <button
             type="button"
             onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 font-worksans font-normal"
             disabled={isSaving}
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className={`bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 ${
+            className={`bg-aqua text-white px-4 py-2 rounded-md hover:bg-blue-700 font-worksans font-normal${
               isSaving ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             disabled={isSaving}

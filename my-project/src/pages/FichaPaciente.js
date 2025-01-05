@@ -88,14 +88,20 @@ export default function FichaPaciente() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="bg-beige flex flex-col min-h-screen">
       <Header {...headerProps} />
 
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Ficha del paciente: {paciente.nombre} {paciente.apellido}</h1>
-        <p className="text-lg text-gray-600 mb-6">RUT: {paciente.rut}</p>
-
-        <button onClick={handleCrearFichaToggle} className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
+      <main className="bg-beige flex-grow container mx-auto px-4 py-8">
+      <h1 className="text-4xl mb-2">
+        <span className="font-arizona font-medium">Ficha del paciente:</span>{' '}
+        <span className="font-arizona font-light">{paciente.nombre} {paciente.apellido}</span>
+      </h1>
+        <p className="text-4xl font-arizona text-gray-600 mb-6">
+          <span className='font-medium'>RUT:</span>
+          <span className='font-light'> {paciente.rut} </span>
+        </p>
+        <hr className="border-black my-4" />
+        <button onClick={handleCrearFichaToggle} className="bg-aqua text-white text-lg px-4 py-2 rounded-md mb-4 font-arizona font-medium hover:bg-blue-700">
           {showCrearFicha ? "Cancelar" : "Añadir nueva ficha"}
         </button>
 

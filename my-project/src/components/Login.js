@@ -81,7 +81,7 @@ export default function Login({ onSuccess }) {
 
       <button
   type="submit"
-  className={`w-full py-3 rounded-full bg-aqua hover:bg-blue-800 text-white font- focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aqua ${
+  className={`w-full py-3 rounded-full bg-aqua hover:bg-blue-800 text-white font-arizona focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aqua ${
     isLoading ? 'bg-gray-400' : ''
   }`}
   disabled={isLoading}

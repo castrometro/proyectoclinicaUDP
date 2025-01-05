@@ -9,6 +9,7 @@ import FichaPaciente from './pages/FichaPaciente';
 import GestionDocentes from './pages/GestionDocentes';
 import GestionEstudiantes from './pages/GestionEstudiantes';
 import GestionAdministrador from './pages/GestionAdministrador';
+import Fonts from './pages/Fonts';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/gestion-administrador" element={<GestionAdministrador />} />
         <Route path="/logout" element={<h1>Cerrando sesión...</h1>} />
         <Route path="*" element={<h1>404 - Not Found</h1>} />
+        <Route path ="/fonts" element={<Fonts></Fonts>} />
       </Routes>
     </Router>
   );

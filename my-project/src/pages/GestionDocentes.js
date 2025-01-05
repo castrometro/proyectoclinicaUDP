@@ -92,11 +92,11 @@ export default function GestionDocentes() {
   // };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="bg-beige flex flex-col min-h-screen">
       <Header {...headerProps} />
       <main className="flex-grow container mx-auto px-4 py-8">
         
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Gestión de Docentes</h1>
+        <h1 className="text-3xl font-arizona font-medium mb-6">Gestión de Docentes</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-3">

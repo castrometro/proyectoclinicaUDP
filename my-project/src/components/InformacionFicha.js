@@ -179,10 +179,10 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Detalles de la Atención</h2>
+        <h2 className="text-2xl font-worksans font-semibold">Detalles de la Atención</h2>
         <button
           onClick={onClose}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
+          className="bg-aqua text-white text-lg px-4 py-2 rounded-md mb-4 hover:bg-blue-700 font-worksans font-normal ">
           Cerrar
         </button>
       </div>
@@ -194,18 +194,36 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
       )}
 
       <div className="space-y-6">
-        <div className="mb-6">
-          <p><strong>Creado por:</strong> {ficha?.creado_por_username || "Desconocido"}</p>
-          <p><strong>Fecha:</strong> {created.date}</p>
-          <p><strong>Hora:</strong> {created.time}</p>
-
-          <p className="mt-4"><strong>Modificado por:</strong> {ficha?.modificado_por_username || "Desconocido"}</p>
-          <p><strong>Fecha:</strong> {modified.date}</p>
-          <p><strong>Hora:</strong> {modified.time}</p>
+        <div className="mb-6 font-worksans">
+          <p>
+            <span className="font-semibold">Creado por:</span> 
+            <span className="font-normal"> {ficha?.creado_por_username || "Desconocido"}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Fecha:</span> 
+            <span className="font-normal"> {created.date}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Hora:</span> 
+            <span className="font-normal"> {created.time}</span>
+          </p>
+          <p className="mt-4">
+            <span className="font-semibold">Modificado por:</span> 
+            <span className="font-normal"> {ficha?.modificado_por_username || "Desconocido"}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Fecha:</span> 
+            <span className="font-normal"> {modified.date}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Hora:</span> 
+            <span className="font-normal"> {modified.time}</span>
+          </p>
         </div>
 
+
         {/* Categoría Valoración */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Valoración</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Valoración</h3>
         <div className="grid grid-cols-2 gap-4">
           {[
             { label: "Factores", name: "factores" },
@@ -215,8 +233,8 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
             { label: "Examen Físico", name: "examen_fisico" },
             { label: "Instrumentos Aplicados", name: "instrumentos_aplicados" },
           ].map((field, index) => (
-            <div key={index} className="col-span-1">
-              <label className="font-semibold block mb-1">{field.label}</label>
+            <div key={index} className="col-span-1 ">
+              <label className="text-lg font-worksans font-semibold block mb-1">{field.label}</label>
               <textarea
                 name={field.name}
                 value={editableFicha ? editableFicha[field.name] : ""}
@@ -235,9 +253,9 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
         </div>
 
         {/* Categoría Diagnóstico */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Diagnóstico</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Categoría Diagnóstico</h3>
         <div className="w-full">
-          <label className="font-semibold block mb-1">Diagnóstico</label>
+          <label className="text-lg font-worksans font-semibold block mb-1">Diagnóstico</label>
           <textarea
             name="diagnostico"
             value={editableFicha ? editableFicha.diagnostico : ""}
@@ -254,9 +272,9 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
         </div>
 
         {/* Categoría Intervenciones */}
-        <h3 className="text-lg font-semibold mt-4">Categoría Intervenciones</h3>
+        <h3 className="text-2xl font-worksans font-semibold mt-4">Categoría Intervenciones</h3>
         <div className="w-full">
-          <label className="font-semibold block mb-1">Intervenciones</label>
+          <label className="text-lg font-worksans font-semibold block mb-1">Intervenciones</label>
           <textarea
             name="intervenciones"
             value={editableFicha ? editableFicha.intervenciones : ""}
@@ -296,14 +314,14 @@ export default function InformacionFicha({ fichaId, onClose, onDelete, onUpdate 
             ) : (
               <button
                 onClick={handleEditToggle}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                className="bg-aqua text-white px-4 py-2 rounded-md hover:bg-blue-700 font-worksans font-normal">
                 Editar
               </button>
             )}
             <button
               onClick={handleDelete}
               disabled={isProcessing}
-              className={`bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 ${
+              className={`bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 font-worksans font-normal ${
                 isProcessing ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >

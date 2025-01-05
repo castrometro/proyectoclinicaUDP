@@ -8,7 +8,7 @@ import { verifyToken } from '../utils/authService';
 
 const AdminCard = ({ title, link }) => (
   <div className="bg-white rounded-lg shadow-md p-12 flex flex-col justify-between border border-black">
-    <h2 className="font-regular font-medium text-2xl mb-4 ">{title}</h2>
+    <h2 className="font-worksans font-semibold text-2xl mb-4 ">{title}</h2>
     <a 
       href={link} 
       className="text-black-600 hover:text-blue-800 flex items-center justify-end"
@@ -88,7 +88,7 @@ export default function MenuAdmin() {
           />
           <div className="absolute inset-0 flex items-center h-[500px]">
             <h1 className="font-arizona font-bold text-6xl mb-4 md:mb-0 md:w-1/3 ml-40">
-              Panel de<br />administracion
+              Panel de<br />administración
             </h1>
           </div>
         </div>

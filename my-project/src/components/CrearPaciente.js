@@ -114,7 +114,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <h2 className="text-2xl font-bold mb-4">Crear Paciente</h2>
+        <h2 className="text-2xl font-arizona font-medium mb-4">Crear Paciente</h2>
         {errorMessage && (
           <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {errorMessage}
@@ -122,7 +122,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="nombre">
               Nombre
             </label>
             <input
@@ -135,7 +135,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="apellido">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="apellido">
               Apellido
             </label>
             <input
@@ -148,7 +148,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rut">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="rut">
               RUT sin puntos, con guión y dígito verificador
             </label>
             <input
@@ -163,7 +163,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fecha_nacimiento">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="fecha_nacimiento">
               Fecha de Nacimiento
             </label>
             <input
@@ -176,7 +176,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edad">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="edad">
               Edad
             </label>
             <input
@@ -189,7 +189,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="domicilio">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="domicilio">
               Domicilio
             </label>
             <input
@@ -202,7 +202,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="numero_telefono">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="numero_telefono">
               Teléfono
             </label>
             <input
@@ -215,7 +215,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="correo">
+            <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="correo">
               Correo Electrónico
             </label>
             <input
@@ -228,7 +228,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="prevision">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="prevision">
               Previsión
             </label>
             <input
@@ -243,7 +243,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-aqua hover:bg-blue-700 text-white font-arizona font-medium mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               disabled={isSaving}
             >
               {isSaving ? 'Guardando...' : 'Crear Paciente'}
@@ -251,7 +251,7 @@ export default function CrearPaciente({ onClose, onCreatePatient }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-red-500 hover:bg-red-700 text-white font-arizona font-medium mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               disabled={isSaving}
             >
               Cancelar

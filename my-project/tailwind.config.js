@@ -9,8 +9,15 @@ module.exports = {
         'arizona': ['ABC Arizona Flare', 'sans-serif'],
         'worksans': ['Work Sans', 'sans-serif'],
       },
+      fontWeight: {
+        light: 300,
+        normal: 400,
+        medium: 500,
+        semibold: 600,
+      },
       colors: {
-        aqua: '#51b6f5', // Reemplaza con el código hexadecimal exacto
+        aqua: '#21b9fb', // Reemplaza con el código hexadecimal exacto
+        beige: '#f8f6f3',
       },
     },
   },

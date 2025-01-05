@@ -45,10 +45,10 @@ export default function GestionAdministrador() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="bg-beige flex flex-col min-h-screen">
       <Header {...headerProps} />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Panel de Administración</h1>
+        <h1 className="text-3xl font-arizona font-medium mb-6" >Panel de Administración</h1>
         
         <div className="flex mb-6">
           <button

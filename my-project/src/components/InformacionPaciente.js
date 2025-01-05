@@ -140,16 +140,16 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Información del Paciente</h2>
+      <h2 className="text-xl font-arizona font-medium mb-4">Información del Paciente</h2>
       {selectedPatient ? (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <p className="text-lg font-medium">
+            <p className="text-lg font-worksans font-normal">
               {selectedPatient.nombre} {selectedPatient.apellido}
             </p>
             <Link
               to={`/ficha-paciente/${selectedPatient.rut}`}
-              className="text-blue-500 hover:text-blue-600 flex items-center"
+              className="text-aqua hover:text-blue-600 flex items-center font-worksans font-normal"
             >
               Ver ficha completa
               <ExternalLink size={16} className="ml-1" />
@@ -164,7 +164,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 </div>
               )}
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
+                <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="nombre">
                   Nombre
                 </label>
                 <input
@@ -177,7 +177,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="apellido">
+                <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="apellido">
                   Apellido
                 </label>
                 <input
@@ -190,7 +190,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fecha_nacimiento">
+                <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="fecha_nacimiento">
                   Fecha de Nacimiento
                 </label>
                 <input
@@ -203,7 +203,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rut">
+                <label className="block text-base font-worksans font-semibold  mb-2" htmlFor="rut">
                   RUT sin puntos, con guión y dígito verificador
                 </label>
                 <input
@@ -220,7 +220,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-aqua hover:bg-blue-700 text-white font-arizona font-medium mb-4  py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   disabled={isSaving} // Desactiva el botón mientras se guarda
                 >
                   {isSaving ? (
@@ -251,7 +251,7 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-red-500 hover:bg-red-700 text-white font-arizona font-medium mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   disabled={isSaving} // Desactiva el botón mientras se guarda
                 >
                   Cancelar
@@ -262,23 +262,23 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
             <div className="space-y-2">
               <p className="flex items-center">
                 <User size={16} className="mr-2 text-gray-500" />
-                <span className="font-semibold mr-2">RUT:</span> {selectedPatient.rut}
+                <span className="text-lg font-worksans font-semibold mr-2">RUT:</span> {selectedPatient.rut}
               </p>
               <p className="flex items-center">
                 <Calendar size={16} className="mr-2 text-gray-500" />
-                <span className="font-semibold mr-2">Edad:</span> {selectedPatient.edad} años
+                <span className="text-lg font-worksans font-semibold mr-2">Edad:</span> {selectedPatient.edad} años
               </p>
               <p className="flex items-center">
                 <Mail size={16} className="mr-2 text-gray-500" />
-                <span className="font-semibold mr-2">Correo:</span> {selectedPatient.correo}
+                <span className="text-lg font-worksans font-semibold mr-2">Correo:</span> {selectedPatient.correo}
               </p>
               <p className="flex items-center">
                 <Phone size={16} className="mr-2 text-gray-500" />
-                <span className="font-semibold mr-2">Teléfono:</span> {selectedPatient.numero_telefono}
+                <span className="text-lg font-worksans font-semibold mr-2">Teléfono:</span> {selectedPatient.numero_telefono}
               </p>
               <p className="flex items-center">
                 <CreditCard size={16} className="mr-2 text-gray-500" />
-                <span className="font-semibold mr-2">Previsión:</span> {selectedPatient.prevision}
+                <span className="text-lg font-worksans font-semibold mr-2">Previsión:</span> {selectedPatient.prevision}
               </p>
             </div>
           )}
@@ -287,14 +287,14 @@ export default function InformacionPaciente({ selectedPatient, onPatientDeleted,
             <div className="flex space-x-4 mt-4">
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                className="font-arizona font-medium flex items-center bg-aqua text-white px-4 py-2 rounded-md hover:bg-blue-600"
               >
                 <Edit size={16} className="mr-2" /> Editar
               </button>
               <button
                 onClick={handleDelete}
                 disabled={isDeleting} // Desactiva el botón mientras carga
-                className={`flex items-center px-4 py-2 rounded-md text-white ${
+                className={`flex items-center px-4 py-2 rounded-md text-white font-arizona font-medium  ${
                   isDeleting ? 'bg-gray-500' : 'bg-red-500 hover:bg-red-600'
                 }`}
               >
