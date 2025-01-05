@@ -52,11 +52,11 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <h2 className="text-2xl font-bold mb-4">Crear Estudiante</h2>
+        <h2 className="text-2xl font-arizona font-medium mb-4">Crear Estudiante</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>} {/* Mensaje de error */}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="username">
               Nombre de Usuario
             </label>
             <input
@@ -69,7 +69,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="first_name">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="first_name">
               Nombre
             </label>
             <input
@@ -82,7 +82,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="last_name">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="last_name">
               Apellido
             </label>
             <input
@@ -95,7 +95,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="email">
               Correo Electrónico
             </label>
             <input
@@ -108,7 +108,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            <label className="block text-base font-worksans font-semibold  mb-2 " htmlFor="password">
               Contraseña
             </label>
             <input
@@ -123,7 +123,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-aqua hover:bg-blue-700 text-white font-arizona font-medium mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               disabled={isCreating} // Desactiva el botón mientras se crea
             >
               {isCreating ? 'Creando...' : 'Crear Estudiante'}
@@ -131,7 +131,7 @@ export default function CrearEstudiante({ onClose, onCreateStudent }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-red-500 hover:bg-red-700 text-white font-arizona font-medium mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Cancelar
             </button>
