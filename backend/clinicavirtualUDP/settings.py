@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = "django-insecure-3#4t(+#rft2x_=k#@!vnof3gk73(_+*fab%-i5l9wpy3q53hn7"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['fichaclinica.udp.cl', 'www.fichaclinica.udp.cl']
 
 # Application definition
 INSTALLED_APPS = [
@@ -67,13 +67,21 @@ DATABASES = {
     #     "HOST": "44.220.155.104",
     #     "PORT": "5432",
     # },
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "HOST": "labcal-certificacion.c6vjk11gxhuf.us-east-1.rds.amazonaws.com",
-        "USER": "root",
-       "PASSWORD": "20419-0Dav",
-        "NAME": "pablo_db",
-        "PORT": 3306,
+    # "default": {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "HOST": "labcal-certificacion.c6vjk11gxhuf.us-east-1.rds.amazonaws.com",
+    #     "USER": "root",
+    #    "PASSWORD": "20419-0Dav",
+    #     "NAME": "pablo_db",
+    #     "PORT": 3306,
+    # }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fichaclinicaudp_db',
+        'USER': 'fichaclinicaudp_admin_back',
+        'PASSWORD': 'administrador2025UDP_',
+        'HOST': 'localhost',  
+        'PORT': '3306',
     }
     
 }
@@ -101,8 +109,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'  # Ruta para servir archivos estáticos
+STATIC_ROOT = '/home/fichaclinicaudp/backend/static/'  # Carpeta en el servidor donde se recopilan los archivos estáticos
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

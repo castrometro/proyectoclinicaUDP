@@ -1,7 +1,7 @@
 // utils/pacientesService.js
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/pacientes/';
+const API_URL = 'https://fichaclinica.udp.cl/api/pacientes/';
 
 // Función para obtener la lista de pacientes
 export const getPacientes = async () => {

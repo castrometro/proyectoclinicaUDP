@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/docentes/';
+const API_URL = 'https://fichaclinica.udp.cl/api/docentes/';
 
 // Obtener lista de docentes
 export const getDocentes = async () => {

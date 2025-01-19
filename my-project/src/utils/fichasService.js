@@ -1,7 +1,7 @@
 // utils/fichaService.js
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/fichas-clinicas/';
+const API_URL = 'https://fichaclinica.udp.cl/api/fichas-clinicas/';
 
 // Función para obtener las fichas clínicas de un paciente específico
 export const getFichasClinicas = async (rut) => {
