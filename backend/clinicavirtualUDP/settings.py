@@ -59,22 +59,7 @@ WSGI_APPLICATION = "clinicavirtualUDP.wsgi.application"
 
 # Database
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.postgresql",
-    #     "NAME": "clinicaUDP",
-    #     "USER": "postgres",
-    #     "PASSWORD": "HgE#3q!ZsNb*Tmu",
-    #     "HOST": "44.220.155.104",
-    #     "PORT": "5432",
-    # },
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "HOST": "labcal-certificacion.c6vjk11gxhuf.us-east-1.rds.amazonaws.com",
-    #     "USER": "root",
-    #    "PASSWORD": "20419-0Dav",
-    #     "NAME": "pablo_db",
-    #     "PORT": 3306,
-    # }
+ 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fichaclinicaudp_db',
